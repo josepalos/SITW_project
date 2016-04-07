@@ -32,6 +32,19 @@ def list_artists(request):
     )
 
 
+def artist_details(request, artist_id):
+    artist = Artist.objects.get(pk = artist_id)
+    return render(
+        request,
+        'artist.html',
+        {
+            'titlehead': 'Artist',
+            'pagetitle': artist.name,
+            'artist': artist,
+            'album': Album.objects.filter(artist=artist).order_by('release_date')[0]
+        }
+    )
+
 def list_songs(request, album_id):
     pass
 
