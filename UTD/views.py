@@ -9,12 +9,14 @@ def list_albums(request, artist_id):
 
 def list_artists(request):
     artists = Artist.objects.all()
-    artistsjson = []
-    for a in artists:
-        artist = dict()
-        artist['name'] = a.name
-        artistsjson.append(artist)
-    return HttpResponse(json.dumps(artistsjson))
+    return render(
+        request,
+        'artistslist.html',
+        {
+            'titlehead': 'Artists list',
+            'pagetitle': 'Artists list',
+            'artists_list': artists
+        })
 
 def list_songs(request, album_id):
     pass
