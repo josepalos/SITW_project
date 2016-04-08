@@ -59,6 +59,7 @@ def artist_details(request, artist_id):
         }
     )
 
+
 def list_songs(request, album_id):
     pass
 
