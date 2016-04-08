@@ -19,6 +19,20 @@ def list_albums(request, artist_id):
     )
 
 
+def album_details(request, artist_id, album_id):
+    album = Album.objects.get(pk=album_id)
+
+    return render(
+        request,
+        'album.html',
+        {
+            'titlehead': 'Album %s' % album.name,
+            'pagetitle': 'Album %s' % album.name,
+            'album': album,
+        }
+    )
+
+
 def list_artists(request):
     artists = Artist.objects.all()
     return render(
