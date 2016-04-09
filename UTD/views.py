@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from models import Artist, Album
+from models import Artist, Album, Song
 from django.http import HttpResponse
 import datetime
 import json
@@ -46,5 +46,26 @@ def artist_details(request, artist_id):
     )
 
 def list_songs(request, album_id):
-    pass
+    songs = Song.objects.filter(album= album_id)
+    return render(
+        request,
+        'songslist.html',
+        {
+            'titlehead': 'List of Songs',
+            'pagetitle': 'List of Songs of the album ---> %s <---' % Album.objects.get(pk=album_id).name,
+            'songs_list': songs
+        }
+    )
+
+def song_details(request, song_id):
+    song = Song.objects.get(pk= song_id)
+    return render(
+        request,
+        'song.html',
+        {
+            'titlehead': 'Song details',
+            'pagetitle': 'Details of: %s' % song.name,
+            'song': song,
+        }
+    )
 

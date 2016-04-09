@@ -1,0 +1,8 @@
+{% extends 'basepage.html' %}
+{% block content %}
+    <ul>
+        {% for song in songs_list %}
+            <li>{{ song.name }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
