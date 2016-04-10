@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from models import Artist, Album
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 
 class ArtistList(ListView):
@@ -12,6 +12,18 @@ class ArtistList(ListView):
         context = super(ArtistList, self).get_context_data(**kwargs)
         context['titlehead'] = 'Artists list'
         context['pagetitle'] = 'Artists list'
+        return context
+
+
+class ArtistDetails(DetailView):
+    model = Artist
+    template_name = 'artist.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ArtistDetails, self).get_context_data(**kwargs)
+        context['titlehead'] = 'Artist'
+        context['pagetitle'] = self.object.name
+        context['album'] = Album.objects.filter(artist=self.object).order_by('release_date')[0]
         return context
 
 
@@ -39,33 +51,6 @@ def album_details(request, artist_id, album_id):
             'titlehead': 'Album %s' % album.name,
             'pagetitle': 'Album %s' % album.name,
             'album': album,
-        }
-    )
-
-
-def list_artists(request):
-    artists = Artist.objects.all()
-    return render(
-        request,
-        'artistslist.html',
-        {
-            'titlehead': 'Artists list',
-            'pagetitle': 'Artists list',
-            'artists_list': artists
-        }
-    )
-
-
-def artist_details(request, artist_id):
-    artist = Artist.objects.get(pk = artist_id)
-    return render(
-        request,
-        'artist.html',
-        {
-            'titlehead': 'Artist',
-            'pagetitle': artist.name,
-            'artist': artist,
-            'album': Album.objects.filter(artist=artist).order_by('release_date')[0]
         }
     )
 
