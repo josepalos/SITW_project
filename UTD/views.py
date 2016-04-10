@@ -8,6 +8,12 @@ class ArtistList(ListView):
     template_name = 'artistslist.html'
     context_object_name = 'artists_list'  # the name of the object_list used in the template.
 
+    def get_context_data(self, **kwargs):
+        context = super(ArtistList, self).get_context_data(**kwargs)
+        context['titlehead'] = 'Artists list'
+        context['pagetitle'] = 'Artists list'
+        return context
+
 
 def list_albums(request, artist_id):
     artist = Artist.objects.get(id=artist_id)
