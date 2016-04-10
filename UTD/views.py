@@ -43,18 +43,15 @@ class AlbumList(ListView):
         return context
 
 
-def album_details(request, artist_id, album_id):
-    album = Album.objects.get(pk=album_id)
+class AlbumDetails(DetailView):
+    model = Album
+    template_name = 'album.html'
 
-    return render(
-        request,
-        'album.html',
-        {
-            'titlehead': 'Album %s' % album.name,
-            'pagetitle': 'Album %s' % album.name,
-            'album': album,
-        }
-    )
+    def get_context_data(self, **kwargs):
+        context = super(AlbumDetails, self).get_context_data(**kwargs)
+        context['titlehead'] = 'Album %s' % self.object.name
+        context['pagetitle'] = 'Album %s' % self.object.name
+        return context
 
 
 def list_songs(request, album_id):
