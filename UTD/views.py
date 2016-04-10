@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from models import Artist, Album
 from django.views.generic import ListView, DetailView
+from django.shortcuts import get_object_or_404
 
 
 class ArtistList(ListView):
@@ -27,18 +28,19 @@ class ArtistDetails(DetailView):
         return context
 
 
-def list_albums(request, artist_id):
-    artist = Artist.objects.get(id=artist_id)
-    albums = Album.objects.filter(artist_id=artist_id)
-    return render(
-        request,
-        'albumslist.html',
-        {
-            'titlehead': 'Albums list',
-            'pagetitle': 'Albums from: %s' % artist.name,
-            'albums_list': albums
-        }
-    )
+class AlbumList(ListView):
+    template_name = 'albumslist.html'
+    context_object_name = 'albums_list'  # the name of the object_list used in the template.
+
+    def get_queryset(self):
+        self.artist = get_object_or_404(Artist, pk=self.kwargs['artist_id'])
+        return Album.objects.filter(artist=self.artist)
+
+    def get_context_data(self, **kwargs):
+        context = super(AlbumList, self).get_context_data(**kwargs)
+        context['titlehead'] = 'Albums list'
+        context['pagetitle'] = 'Albums list'
+        return context
 
 
 def album_details(request, artist_id, album_id):
