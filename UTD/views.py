@@ -1,8 +1,12 @@
 from django.shortcuts import render
 from models import Artist, Album
-from django.http import HttpResponse
-import datetime
-import json
+from django.views.generic import ListView
+
+
+class ArtistList(ListView):
+    model = Artist
+    template_name = 'artistslist.html'
+    context_object_name = 'artists_list'  # the name of the object_list used in the template.
 
 
 def list_albums(request, artist_id):
