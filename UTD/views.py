@@ -1,8 +1,5 @@
 from django.shortcuts import render
 from models import Artist, Album, Song
-from django.http import HttpResponse
-import datetime
-import json
 
 
 def list_albums(request, artist_id):
@@ -45,6 +42,7 @@ def artist_details(request, artist_id):
         }
     )
 
+
 def list_songs(request, album_id):
     songs = Song.objects.filter(album= album_id)
     return render(
@@ -56,6 +54,7 @@ def list_songs(request, album_id):
             'songs_list': songs
         }
     )
+
 
 def song_details(request, song_id):
     song = Song.objects.get(pk= song_id)
