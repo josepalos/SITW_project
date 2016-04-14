@@ -1,9 +1,35 @@
 from models import Artist, Album, Song
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
+from django.views.generic.base import TemplateResponseMixin
+from django.http import HttpResponse
+from django.core import serializers
 
 
-class ArtistList(ListView):
+class FormatResponseMixin(TemplateResponseMixin):
+
+    def render_to_json_response(self, objects, **kwargs):
+        return HttpResponse(serializers.serialize('json', objects, **kwargs), content_type='application/json')
+
+    def render_to_xml_response(self, objects, **kwargs):
+        return HttpResponse(serializers.serialize('xml', objects, **kwargs), content_type='application/xml')
+
+    def render_to_response(self, context, **kwargs):
+        # Look for a 'format=json' GET argument
+        if 'format' in self.kwargs:
+            try:
+                objects = [self.object]
+            except AttributeError:
+                objects = self.object_list
+
+            if self.kwargs['format'] == '.json':
+                return self.render_to_json_response(objects=objects)
+            elif self.kwargs['format'] == '.xml':
+                return self.render_to_xml_response(objects=objects)
+        return super(FormatResponseMixin, self).render_to_response(context)
+
+
+class ArtistList(ListView, FormatResponseMixin):
     model = Artist
     template_name = 'artistslist.html'
     context_object_name = 'artists_list'  # the name of the object_list used in the template.
@@ -15,7 +41,7 @@ class ArtistList(ListView):
         return context
 
 
-class ArtistDetails(DetailView):
+class ArtistDetails(DetailView, FormatResponseMixin):
     model = Artist
     template_name = 'artist.html'
 
@@ -27,7 +53,7 @@ class ArtistDetails(DetailView):
         return context
 
 
-class AlbumList(ListView):
+class AlbumList(ListView, FormatResponseMixin):
     template_name = 'albumslist.html'
     context_object_name = 'albums_list'  # the name of the object_list used in the template.
 
@@ -42,7 +68,7 @@ class AlbumList(ListView):
         return context
 
 
-class AlbumDetails(DetailView):
+class AlbumDetails(DetailView, FormatResponseMixin):
     model = Album
     template_name = 'album.html'
 
@@ -53,7 +79,7 @@ class AlbumDetails(DetailView):
         return context
 
 
-class SongList(ListView):
+class SongList(ListView, FormatResponseMixin):
     template_name = 'songslist.html'
     context_object_name = 'songs_list'
 
@@ -68,7 +94,7 @@ class SongList(ListView):
         return context
 
 
-class SongDetails(DetailView):
+class SongDetails(DetailView, FormatResponseMixin):
     model = Song
     template_name = 'songslist.html'
 
