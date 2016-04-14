@@ -32,7 +32,7 @@ class AlbumList(ListView):
     context_object_name = 'albums_list'  # the name of the object_list used in the template.
 
     def get_queryset(self):
-        self.artist = get_object_or_404(Artist, pk=self.kwargs['artist_id'])
+        self.artist = get_object_or_404(Artist, pk=self.kwargs['pk'])
         return Album.objects.filter(artist=self.artist)
 
     def get_context_data(self, **kwargs):
@@ -51,3 +51,9 @@ class AlbumDetails(DetailView):
         context['titlehead'] = 'Album %s' % self.object.name
         context['pagetitle'] = 'Album %s' % self.object.name
         return context
+
+class SongList(ListView):
+    pass
+
+class SongDetails(DetailView):
+    pass
