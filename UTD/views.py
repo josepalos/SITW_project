@@ -103,3 +103,18 @@ class SongDetails(DetailView, FormatResponseMixin):
         context['titlehead'] = 'Song %s' % self.object.name
         context['pagetitle'] = 'Song %s' % self.object.name
         return context
+
+
+class RelatedArtistList(ListView, FormatResponseMixin):
+    template_name = 'related_artist_list.html'
+    context_object_name = 'artist_list'
+
+    def get_queryset(self):
+        self.principal_artist = get_object_or_404(Artist, pk=self.kwargs['pk'])
+        return self.principal_artist.related.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(RelatedArtistList, self).get_context_data(**kwargs)
+        context['titlehead'] = 'Related artists'
+        context['pagetitle'] = 'Related artists'
+        return context

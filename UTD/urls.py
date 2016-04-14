@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from UTD.views import ArtistList, ArtistDetails, AlbumList, AlbumDetails, SongList, SongDetails
+from UTD.views import ArtistList, ArtistDetails, AlbumList, AlbumDetails, SongList, SongDetails, RelatedArtistList
 
 
 urlpatterns = [

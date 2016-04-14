@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 class Artist(models.Model):
     name = models.TextField()
+    related = models.ManyToManyField('self', symmetrical=True, related_name='related')
 
     def __unicode__(self):
         return u'%s' % self.name
@@ -35,14 +36,6 @@ class Provider(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.name
-
-
-class RelatedArtists(models.Model):
-    principal = models.ForeignKey(Artist, related_name='principal')
-    related = models.ForeignKey(Artist, related_name='related')
-
-    def __unicode__(self):
-        return u'%s' % self.principal_artist
 
 
 class UserArtistsList(models.Model):
