@@ -51,8 +51,3 @@ class AlbumDetails(DetailView):
         context['titlehead'] = 'Album %s' % self.object.name
         context['pagetitle'] = 'Album %s' % self.object.name
         return context
-
-
-def list_songs(request, album_id):
-    pass
-
