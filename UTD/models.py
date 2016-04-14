@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -25,3 +26,28 @@ class Song(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.name
+
+
+class Provider(models.Model):
+    provider_name = models.TextField()
+    album = models.ForeignKey(Album)
+    link = models.TextField()
+
+    def __unicode__(self):
+        return u'%s' % self.name
+
+
+class RelatedArtists(models.Model):
+    principal = models.ForeignKey(Artist, related_name='principal')
+    related = models.ForeignKey(Artist, related_name='related')
+
+    def __unicode__(self):
+        return u'%s' % self.principal_artist
+
+
+class UserArtistsList(models.Model):
+    user_name = models.ForeignKey(User)
+    followed_artist = models.ForeignKey(Artist)
+
+    def __unicode__(self):
+        return u'%s' % self.user_name
