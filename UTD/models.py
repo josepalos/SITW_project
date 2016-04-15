@@ -21,6 +21,9 @@ class Album(models.Model):
     def __unicode__(self):
         return u'%s' % self.name
 
+    def get_absolute_url(self):
+        return reverse('UTD:album-detail', kwargs={'pkr': self.artist.pk, 'pk': self.pk})
+
 
 class Song(models.Model):
     name = models.TextField()
