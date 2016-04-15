@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 # Create your models here.
 
@@ -27,6 +28,9 @@ class Song(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.name
+
+    def get_absolute_url(self):
+        return reverse('UTD:song-detail', kwargs={'pkr': self.album.pk, 'pk': self.pk})
 
 
 class Provider(models.Model):

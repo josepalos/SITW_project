@@ -1,5 +1,6 @@
-from django.conf.urls import url
+from django.conf.urls import url, patterns, include
 from UTD.views import ArtistList, ArtistDetails, AlbumList, AlbumDetails, SongList, SongDetails, RelatedArtistList
+from UTD.views import APISongDetail
 
 
 urlpatterns = [
@@ -12,3 +13,10 @@ urlpatterns = [
 
     url(r'^songs/(?P<pk>\d+)(?P<format>(\.json|\.xml|\.html)?)/$', SongDetails.as_view()),
 ]
+
+
+# REST API patterns
+urlpatterns += patterns(
+    '',
+    url(r'^api/songs/(?P<pk>\d+)/$', APISongDetail.as_view(), name='song-detail'),
+)

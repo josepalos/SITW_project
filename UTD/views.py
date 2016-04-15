@@ -5,6 +5,11 @@ from django.views.generic.base import TemplateResponseMixin
 from django.http import HttpResponse
 from django.core import serializers
 
+# REST API IMPORTS
+from rest_framework import generics, permissions
+
+from serializers import SongSerializer
+
 
 class FormatResponseMixin(TemplateResponseMixin):
 
@@ -118,3 +123,10 @@ class RelatedArtistList(ListView, FormatResponseMixin):
         context['titlehead'] = 'Related artists'
         context['pagetitle'] = 'Related artists'
         return context
+
+
+# REST views
+class APISongDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = Song
+    queryset = Song.objects.all()
+    serializer_class = SongSerializer
