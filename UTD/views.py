@@ -7,6 +7,9 @@ from django.core import serializers
 
 # REST API IMPORTS
 from rest_framework import generics, permissions
+from rest_framework.decorators import api_view
+from rest_framework.reverse import reverse
+from rest_framework.response import Response
 
 from serializers import SongSerializer, AlbumSerializer, ArtistSerializer
 
@@ -126,6 +129,16 @@ class RelatedArtistList(ListView, FormatResponseMixin):
 
 
 # REST views
+@api_view(['GET'])
+def api_root(request, format=None):
+    """
+    The entry endpoint of our API.
+    """
+    return Response({
+        'artists': reverse('artist---list', request=request),
+    })
+
+
 class APISongDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Song
     queryset = Song.objects.all()

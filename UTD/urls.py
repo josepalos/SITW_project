@@ -1,4 +1,6 @@
 from django.conf.urls import url, patterns, include
+from rest_framework.urlpatterns import format_suffix_patterns
+
 from UTD.views import ArtistList, ArtistDetails, AlbumList, AlbumDetails, SongList, SongDetails, RelatedArtistList
 from UTD.views import APISongDetail, APIAlbumDetail, APIArtistDetail
 
@@ -17,7 +19,8 @@ urlpatterns = [
 
 # REST API patterns
 urlpatterns += patterns(
-    '',
+    'UTD.views',
+    url(r'^api/$', 'api_root'),
     # url(r'^api/artists/$'),
     url(r'^api/artists/(?P<pk>\d+)/$', APIArtistDetail.as_view(), name='artist-detail'),
     # url(r'^api/albums/$'),
