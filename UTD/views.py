@@ -72,6 +72,7 @@ class AlbumList(ListView, FormatResponseMixin):
         context = super(AlbumList, self).get_context_data(**kwargs)
         context['titlehead'] = 'Albums list'
         context['pagetitle'] = 'Albums list'
+        context['artist'] = self.artist
         return context
 
 

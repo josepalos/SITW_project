@@ -3,6 +3,10 @@
     <p>
         Artist: {{ artist.name }}
         <br>
+        {% if not user.is_anonymous %}
+            <a href="{% url 'UTD:artist_follow' artist.pk %}">Follow</a></li>
+        {% endif %}
+        <br>
         Last album released: {{ album }}
         <br>
         <a href="{% url 'UTD:artist_albums' pk=artist.pk format=''%}">More albums</a>
