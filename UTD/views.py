@@ -8,7 +8,7 @@ from django.core import serializers
 # REST API IMPORTS
 from rest_framework import generics, permissions
 
-from serializers import SongSerializer, AlbumSerializer
+from serializers import SongSerializer, AlbumSerializer, ArtistSerializer
 
 
 class FormatResponseMixin(TemplateResponseMixin):
@@ -136,4 +136,10 @@ class APIAlbumDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Album
     queryset = Album.objects.all()
     serializer_class = AlbumSerializer
+
+
+class APIArtistDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = Artist
+    queryset = Artist.objects.all()
+    serializer_class = ArtistSerializer
 

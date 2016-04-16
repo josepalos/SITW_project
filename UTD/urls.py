@@ -1,6 +1,6 @@
 from django.conf.urls import url, patterns, include
 from UTD.views import ArtistList, ArtistDetails, AlbumList, AlbumDetails, SongList, SongDetails, RelatedArtistList
-from UTD.views import APISongDetail, APIAlbumDetail
+from UTD.views import APISongDetail, APIAlbumDetail, APIArtistDetail
 
 
 urlpatterns = [
@@ -19,7 +19,7 @@ urlpatterns = [
 urlpatterns += patterns(
     '',
     # url(r'^api/artists/$'),
-    # url(r'^api/artists/(?<pk>\d+)/$'),
+    url(r'^api/artists/(?P<pk>\d+)/$', APIArtistDetail.as_view(), name='artist-detail'),
     # url(r'^api/albums/$'),
     url(r'^api/albums/(?P<pk>\d+)/$', APIAlbumDetail.as_view(), name='album-detail'),
     # url(r'^api/songs/$'),
