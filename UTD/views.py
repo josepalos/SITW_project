@@ -51,7 +51,12 @@ class ArtistDetails(DetailView, FormatResponseMixin):
         context = super(ArtistDetails, self).get_context_data(**kwargs)
         context['titlehead'] = 'Artist'
         context['pagetitle'] = self.object.name
-        context['album'] = Album.objects.filter(artist=self.object).order_by('release_date')[0]
+
+        try:
+            last_album = Album.objects.filter(artist=self.object).order_by('release_date')[0]
+        except IndexError:
+            last_album = 'No albums found.'
+        context['album'] = last_album
         return context
 
 
