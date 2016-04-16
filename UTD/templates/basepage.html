@@ -3,7 +3,18 @@
   <title>{{ titlehead}}</title>
   </head>
 <body>
-  <h1>{{ pagetitle }}</h1>
+    <div>
+        {% if user.is_anonymous %}
+            Not logged in.
+            <a href="{% url 'django.contrib.auth.views.login' %}">login</a>
+        {% else %}
+            User: {{ user }}
+            <a href="{% url 'django.contrib.auth.views.logout' %}">logout</a>
+        {% endif %}
+        <hr>
+    </div>
+
+    <h1>{{ pagetitle }}</h1>
 
 {% block content %}
 {% endblock %}
