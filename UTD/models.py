@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 class Artist(models.Model):
     name = models.TextField()
-    related = models.ManyToManyField('self', symmetrical=True, related_name='related')
+    related = models.ManyToManyField('self', symmetrical=True, related_name='related', blank=True)
 
     def __unicode__(self):
         return u'%s' % self.name
@@ -40,7 +40,7 @@ class Provider(models.Model):
 
 class UserArtistsList(models.Model):
     user = models.ForeignKey(User)
-    followed_artist = models.ManyToManyField(Artist)
+    followed_artist = models.ManyToManyField(Artist, blank=True)
 
     def __unicode__(self):
         return u'%s' % self.user
