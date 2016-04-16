@@ -1,4 +1,4 @@
-from models import Artist, Album, Song
+from models import Artist, Album, Song, Provider
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateResponseMixin
@@ -128,6 +128,21 @@ class RelatedArtistList(ListView, FormatResponseMixin):
         return context
 
 
+class Providers(ListView, FormatResponseMixin):
+    template_name = 'album_provider.html'
+    context_object_name = 'provider_list'
+
+    def get_queryset(self):
+        self.album = get_object_or_404(Album, pk=self.kwargs['pk'])
+        return Provider.objects.filter(album=self.album)
+
+    def get_context_data(self, **kwargs):
+        context = super(Providers, self).get_context_data(**kwargs)
+        context['titlehead'] = self.album.name
+        context['pagetitle'] = self.album.name
+        return context
+
+
 # REST views
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -160,3 +175,4 @@ class APIArtistDetail(generics.RetrieveUpdateDestroyAPIView):
 class APIArtistList(generics.ListCreateAPIView):
     queryset = Artist.objects.all()
     serializer_class = ArtistSerializer
+    
