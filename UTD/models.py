@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 
 class Artist(models.Model):
     name = models.TextField()
-    related = models.ManyToManyField('self', symmetrical=True, related_name='related')
+    related = models.ManyToManyField('self', symmetrical=True, related_name='related', blank=True)
 
     def __unicode__(self):
         return u'%s' % self.name
@@ -46,8 +46,8 @@ class Provider(models.Model):
 
 
 class UserArtistsList(models.Model):
-    user_name = models.ForeignKey(User)
-    followed_artist = models.ForeignKey(Artist)
+    user = models.OneToOneField(User)
+    followed_artist = models.ManyToManyField(Artist, blank=True)
 
     def __unicode__(self):
-        return u'%s' % self.user_name
+        return u'%s' % self.user

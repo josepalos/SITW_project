@@ -1,9 +1,16 @@
-from models import Artist, Album, Song, Provider
+from models import Artist, Album, Song, Provider, UserArtistsList
+from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateResponseMixin
 from django.http import HttpResponse
 from django.core import serializers
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+
+
+def index(request):
+    return render(request, 'index.html')
 
 # REST API IMPORTS
 from rest_framework import generics, permissions
@@ -57,7 +64,12 @@ class ArtistDetails(DetailView, FormatResponseMixin):
         context = super(ArtistDetails, self).get_context_data(**kwargs)
         context['titlehead'] = 'Artist'
         context['pagetitle'] = self.object.name
-        context['album'] = Album.objects.filter(artist=self.object).order_by('release_date')[0]
+
+        try:
+            last_album = Album.objects.filter(artist=self.object).order_by('release_date')[0]
+        except IndexError:
+            last_album = None
+        context['album'] = last_album
         return context
 
 
@@ -73,6 +85,7 @@ class AlbumList(ListView, FormatResponseMixin):
         context = super(AlbumList, self).get_context_data(**kwargs)
         context['titlehead'] = 'Albums list'
         context['pagetitle'] = 'Albums list'
+        context['artist'] = self.artist
         return context
 
 
@@ -142,6 +155,40 @@ class Providers(ListView, FormatResponseMixin):
         context['pagetitle'] = self.album.name
         return context
 
+class FollowedArtists(ListView, FormatResponseMixin):
+    template_name = 'followed_artists.html'
+    context_object_name = 'followed_artists'
+
+    def get_queryset(self):
+        self.user = get_object_or_404(User, username=self.kwargs['username'])
+        return UserArtistsList.objects.get(user=self.user).followed_artist.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(FollowedArtists, self).get_context_data(**kwargs)
+        context['titlehead'] = 'Followed artists'
+        context['pagetitle'] = 'Followed artists by: %s' % self.user
+        return context
+
+
+@login_required
+def follow_artist(request, pk):
+    user_following = UserArtistsList.objects.get(user=request.user)
+    artist = Artist.objects.get(pk=pk)
+
+    user_following.followed_artist.add(artist)
+
+    return HttpResponse("Followed.")
+
+
+@login_required
+def unfollow_artist(request, pk):
+    user_following = UserArtistsList.objects.get(user=request.user)
+    artist = Artist.objects.get(pk=pk)
+
+    user_following.followed_artist.remove(artist)
+
+    return HttpResponse("Unfollowed.")
+
 
 # REST views
 @api_view(['GET'])
@@ -175,4 +222,3 @@ class APIArtistDetail(generics.RetrieveUpdateDestroyAPIView):
 class APIArtistList(generics.ListCreateAPIView):
     queryset = Artist.objects.all()
     serializer_class = ArtistSerializer
-    
