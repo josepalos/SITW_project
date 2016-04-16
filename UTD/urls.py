@@ -1,8 +1,9 @@
 from django.conf.urls import url
-from UTD.views import ArtistList, ArtistDetails, AlbumList, AlbumDetails, SongList, SongDetails, RelatedArtistList, Providers, FollowedArtists, follow_artist, unfollow_artist
+from UTD.views import ArtistList, ArtistDetails, AlbumList, AlbumDetails, SongList, SongDetails, RelatedArtistList, Providers, FollowedArtists, follow_artist, unfollow_artist, index
 
 
 urlpatterns = [
+    url(r'^$', index, name='index'),
     url(r'^artists(?P<format>(\.json|\.xml|\.html)?)/$', ArtistList.as_view(), name='artist_list'),
     url(r'^artists/(?P<pk>\d+)(?P<format>(\.json|\.xml|\.html)?)/$', ArtistDetails.as_view(), name='artist_detail'),
     url(r'^artists/(?P<pk>\d+)/albums(?P<format>(\.json|\.xml|\.html)?)/$', AlbumList.as_view(), name='artist_albums'),
