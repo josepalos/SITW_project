@@ -39,7 +39,7 @@ class Provider(models.Model):
 
 
 class UserArtistsList(models.Model):
-    user = models.ForeignKey(User)
+    user = models.OneToOneField(User)
     followed_artist = models.ManyToManyField(Artist, blank=True)
 
     def __unicode__(self):
