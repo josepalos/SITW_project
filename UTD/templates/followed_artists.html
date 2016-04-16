@@ -1,7 +1,7 @@
 {%  extends "basepage.html" %}
 {%  block content %}
 <ul>
-    {% for artist in artist_list %}
+    {% for artist in user.followed_artists %}
         <li>{{ artist.name }}</li>
     {% endfor %}
 </ul>

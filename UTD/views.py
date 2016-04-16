@@ -137,7 +137,7 @@ class Providers(ListView, FormatResponseMixin):
 
 class FollowedArtists(ListView, FormatResponseMixin):
     template_name = 'followed_artists.html'
-    context_object_name = 'artist_list'
+    context_object_name = 'user.followed_artists'
 
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs['username'])
