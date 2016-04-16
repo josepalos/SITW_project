@@ -1,4 +1,5 @@
-from models import Artist, Album, Song, Provider
+from models import Artist, Album, Song, Provider, UserArtistsList
+from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateResponseMixin
@@ -132,4 +133,18 @@ class Providers(ListView, FormatResponseMixin):
         context = super(Providers, self).get_context_data(**kwargs)
         context['titlehead'] = self.album.name
         context['pagetitle'] = self.album.name
+        return context
+
+class FollowedArtists(ListView, FormatResponseMixin):
+    template_name = 'followed_artists.html'
+    context_object_name = 'artist_list'
+
+    def get_queryset(self):
+        self.user = get_object_or_404(User, username=self.kwargs['username'])
+        return UserArtistsList.objects.filter(user=self.user)
+
+    def get_context_data(self, **kwargs):
+        context = super(FollowedArtists, self).get_context_data(**kwargs)
+        context['titlehead'] = 'Followed artists'
+        context['pagetitle'] = 'Followed artists by: %s' % self.user
         return context
