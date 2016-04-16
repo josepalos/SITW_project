@@ -135,6 +135,7 @@ class Providers(ListView, FormatResponseMixin):
         context['pagetitle'] = self.album.name
         return context
 
+
 class FollowedArtists(ListView, FormatResponseMixin):
     template_name = 'followed_artists.html'
     context_object_name = 'user.followed_artists'
@@ -148,3 +149,12 @@ class FollowedArtists(ListView, FormatResponseMixin):
         context['titlehead'] = 'Followed artists'
         context['pagetitle'] = 'Followed artists by: %s' % self.user
         return context
+
+
+def follow_artist(request, pk):
+    user_following = UserArtistsList.objects.get(user=request.user)
+    artist = Artist.objects.get(pk=pk)
+
+    user_following.followed_artist.add(artist)
+
+    return HttpResponse("Followed.")

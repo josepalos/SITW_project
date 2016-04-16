@@ -2,7 +2,10 @@
 {%  block content %}
 <ul>
     {% for artist in artists_list %}
-        <li>{{ artist.name }}</li>
+        <li>{{ artist.name }}
+            {% if not user.is_anonymous %}
+                <a href="{% url 'UTD:artist_follow' artist.pk %}">Follow</a></li>
+            {% endif %}
     {% endfor %}
 </ul>
 {%  endblock %}
