@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateResponseMixin
 from django.http import HttpResponse
 from django.core import serializers
+from django.contrib.auth.decorators import login_required
 
 
 class FormatResponseMixin(TemplateResponseMixin):
@@ -151,6 +152,7 @@ class FollowedArtists(ListView, FormatResponseMixin):
         return context
 
 
+@login_required
 def follow_artist(request, pk):
     user_following = UserArtistsList.objects.get(user=request.user)
     artist = Artist.objects.get(pk=pk)
@@ -160,6 +162,7 @@ def follow_artist(request, pk):
     return HttpResponse("Followed.")
 
 
+@login_required
 def unfollow_artist(request, pk):
     user_following = UserArtistsList.objects.get(user=request.user)
     artist = Artist.objects.get(pk=pk)
