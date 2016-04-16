@@ -2,7 +2,8 @@
 {% block content %}
     <ul>
         {% for song in songs_list %}
-            <li>{{ song.name }}</li>
+            <li><a href="{% url 'UTD:song_detail' pk=song.pk format='' %}">{{ song.name }}</a></li>
         {% endfor %}
     </ul>
+    Back to album <a href="{% url 'UTD:album_detail' pk=song.album.pk format='' %}">{{ song.album.name }}</a>
 {% endblock %}

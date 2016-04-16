@@ -7,8 +7,10 @@
             <a href="{% url 'UTD:artist_follow' artist.pk %}">Follow</a></li>
         {% endif %}
         <br>
-        Last album released: {{ album }}
+        {% if album != None %}
+        Last album released: <a href="{% url 'UTD:album_detail' pk=album.pk format='' %}">{{ album }}</a>
         <br>
+        {% endif %}
         <a href="{% url 'UTD:artist_albums' pk=artist.pk format=''%}">More albums</a>
     </p>
 {% endblock %}

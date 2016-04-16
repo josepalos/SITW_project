@@ -1,11 +1,10 @@
 {% extends 'basepage.html' %}
 {% block content %}
     <p>
-        Album name: {{ album.name }} [{{ album.artist.name }}]<br>
+        Album name: {{ album.name }} [<a href="{% url 'UTD:artist_detail' pk=album.artist.pk format='' %}">{{ album.artist.name }}</a>]<br>
         Release date: {{ album.release_date }}
     </p>
     <p>
-        Songs:<br>
-         ~TODO~
+        <a href="{% url 'UTD:album_songs' pk=album.pk format='' %}">Songs</a>
     </p>
 {% endblock %}

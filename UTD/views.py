@@ -55,7 +55,7 @@ class ArtistDetails(DetailView, FormatResponseMixin):
         try:
             last_album = Album.objects.filter(artist=self.object).order_by('release_date')[0]
         except IndexError:
-            last_album = 'No albums found.'
+            last_album = None
         context['album'] = last_album
         return context
 
