@@ -35,7 +35,7 @@ class Provider(models.Model):
     link = models.TextField()
 
     def __unicode__(self):
-        return u'%s' % self.name
+        return u'%s' % self.provider_name
 
 
 class UserArtistsList(models.Model):

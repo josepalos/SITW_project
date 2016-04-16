@@ -118,3 +118,17 @@ class RelatedArtistList(ListView, FormatResponseMixin):
         context['titlehead'] = 'Related artists'
         context['pagetitle'] = 'Related artists'
         return context
+
+class Providers(ListView, FormatResponseMixin):
+    template_name = 'album_provider.html'
+    context_object_name = 'provider_list'
+
+    def get_queryset(self):
+        self.album = get_object_or_404(Album, pk=self.kwargs['pk'])
+        return Providers.objects.filter(album=self.album)
+
+    def get_context_data(self, **kwargs):
+        context = super(Providers, self).get_context_data(**kwargs)
+        context['titlehead'] = self.album.name
+        context['pagetitle'] = self.album.name
+        return context

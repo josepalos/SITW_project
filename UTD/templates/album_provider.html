@@ -1,0 +1,9 @@
+{%  extends "basepage.html" %}
+{%  block content %}
+<ul>
+    {% for provider in provider_list %}
+        <li>{{ provider.name }}<br> <a href={{ provider.link }}>
+</a></li>
+    {% endfor %}
+</ul>
+{%  endblock %}
