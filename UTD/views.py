@@ -1,4 +1,4 @@
-from models import Artist, Album, Song
+from models import Artist, Album, Song, Provider
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateResponseMixin
@@ -125,7 +125,7 @@ class Providers(ListView, FormatResponseMixin):
 
     def get_queryset(self):
         self.album = get_object_or_404(Album, pk=self.kwargs['pk'])
-        return Providers.objects.filter(album=self.album)
+        return Provider.objects.filter(album=self.album)
 
     def get_context_data(self, **kwargs):
         context = super(Providers, self).get_context_data(**kwargs)

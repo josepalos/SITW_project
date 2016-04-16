@@ -2,8 +2,7 @@
 {%  block content %}
 <ul>
     {% for provider in provider_list %}
-        <li>{{ provider.name }}<br> <a href={{ provider.link }}>
-</a></li>
+        <li><a href="{{ provider.link }}">{{ provider.provider_name }}</a></li>
     {% endfor %}
 </ul>
 {%  endblock %}
