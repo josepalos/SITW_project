@@ -1,4 +1,4 @@
-from models import Artist, Album, Song, Provider, UserArtistsList
+from models import Artist, Album, Song, Provider, UserArtistsList, Playlist
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
@@ -167,7 +167,8 @@ class DisplayPlaylist(ListView, FormatResponseMixin):
     context_object_name = 'song_list'
 
     def get_queryset(self):
-        return Song.objects.filter(on_playlist=True)
+        self.user = get_object_or_404(User, username=self.kwargs['username'])
+        return Playlist.objects.filter(user=self.user).all()
 
     def get_context_data(self, **kwargs):
         context = super(DisplayPlaylist, self).get_context_data(**kwargs)

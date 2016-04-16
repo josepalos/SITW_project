@@ -24,7 +24,6 @@ class Album(models.Model):
 class Song(models.Model):
     name = models.TextField()
     album = models.ForeignKey(Album)
-    on_playlist = models.BooleanField(default=False)
 
     def __unicode__(self):
         return u'%s' % self.name
@@ -45,3 +44,10 @@ class UserArtistsList(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.user
+
+class Playlist(models.Model):
+    user = models.ForeignKey(User)
+    song = models.ForeignKey(Song)
+
+    def __unicode__(self):
+        return u'Playlist of user %s' % self.user
