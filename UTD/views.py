@@ -119,6 +119,7 @@ class RelatedArtistList(ListView, FormatResponseMixin):
         context['pagetitle'] = 'Related artists'
         return context
 
+
 class Providers(ListView, FormatResponseMixin):
     template_name = 'album_provider.html'
     context_object_name = 'provider_list'
