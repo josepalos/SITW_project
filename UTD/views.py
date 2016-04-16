@@ -135,7 +135,7 @@ def api_root(request, format=None):
     The entry endpoint of our API.
     """
     return Response({
-        'artists': reverse('artist---list', request=request),
+        'artists': reverse('UTD:artist-list', request=request),
     })
 
 
