@@ -24,6 +24,7 @@ class Album(models.Model):
 class Song(models.Model):
     name = models.TextField()
     album = models.ForeignKey(Album)
+    on_playlist = models.BooleanField(default=False)
 
     def __unicode__(self):
         return u'%s' % self.name

@@ -162,6 +162,20 @@ class FollowedArtists(ListView, FormatResponseMixin):
         context['pagetitle'] = 'Followed artists by: %s' % self.user
         return context
 
+class DisplayPlaylist(ListView, FormatResponseMixin):
+    template_name = 'display_playlist.html'
+    context_object_name = 'song_list'
+
+    def get_queryset(self):
+        return Song.objects.filter(on_playlist=True)
+
+    def get_context_data(self, **kwargs):
+        context = super(DisplayPlaylist, self).get_context_data(**kwargs)
+        context['titlehead'] = 'Playlist'
+        context['pagetitle'] = 'Playlist'
+        return context
+
+
 
 @login_required
 def follow_artist(request, pk):
