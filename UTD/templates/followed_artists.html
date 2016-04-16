@@ -2,7 +2,7 @@
 {%  block content %}
 <ul>
     {% for artist in followed_artists %}
-        <li>{{ artist.name }}</li>
+        <li>{{ artist.name }} <a href="{% url 'UTD:artist_unfollow' artist.pk %}">Unfollow</a></li>
     {% endfor %}
 </ul>
 {%  endblock %}

@@ -158,3 +158,12 @@ def follow_artist(request, pk):
     user_following.followed_artist.add(artist)
 
     return HttpResponse("Followed.")
+
+
+def unfollow_artist(request, pk):
+    user_following = UserArtistsList.objects.get(user=request.user)
+    artist = Artist.objects.get(pk=pk)
+
+    user_following.followed_artist.remove(artist)
+
+    return HttpResponse("Unfollowed.")
