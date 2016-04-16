@@ -1,8 +1,10 @@
 {% extends 'basepage.html' %}
 {% block content %}
     <p>
-        Artist --> {{ artist.name }}
+        Artist: {{ artist.name }}
         <br>
-        Last album released --> {{ album }}
+        Last album released: {{ album }}
+        <br>
+        <a href="{% url 'UTD:artist_albums' pk=artist.pk format=''%}">More albums</a>
     </p>
 {% endblock %}
