@@ -26,7 +26,7 @@ class AlbumSerializer(HyperlinkedModelSerializer):
 
     song_set = HyperlinkedRelatedField(many=True, view_name='UTD:song-detail', read_only=True)
 
-    # artist
+    artist = HyperlinkedRelatedField(view_name='UTD:artist-detail', read_only=True)
 
     class Meta:
         model = Album
@@ -35,7 +35,7 @@ class AlbumSerializer(HyperlinkedModelSerializer):
             'name',
             'release_date',
             'song_set',
-            # 'artist',
+            'artist',
         )
 
 
