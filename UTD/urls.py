@@ -2,7 +2,7 @@ from django.conf.urls import url, patterns, include
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from UTD.views import ArtistList, ArtistDetails, AlbumList, AlbumDetails, SongList, SongDetails, RelatedArtistList
-from UTD.views import APISongDetail, APIAlbumDetail, APIArtistDetail
+from UTD.views import APISongDetail, APIAlbumDetail, APIArtistDetail, APIArtistList
 
 
 urlpatterns = [
@@ -21,7 +21,7 @@ urlpatterns = [
 urlpatterns += patterns(
     'UTD.views',
     url(r'^api/$', 'api_root'),
-    # url(r'^api/artists/$'),
+    url(r'^api/artists/$', APIArtistList.as_view(), name='artist-list'),
     url(r'^api/artists/(?P<pk>\d+)/$', APIArtistDetail.as_view(), name='artist-detail'),
     # url(r'^api/albums/$'),
     url(r'^api/albums/(?P<pk>\d+)/$', APIAlbumDetail.as_view(), name='album-detail'),
