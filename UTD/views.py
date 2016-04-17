@@ -219,48 +219,48 @@ def api_root(request, format=None):
     })
 
 
-class APISongDetail(generics.RetrieveUpdateDestroyAPIView):
+class APISongDetail(generics.RetrieveAPIView):
     model = Song
     queryset = Song.objects.all()
     serializer_class = SongSerializer
 
 
-class APIAlbumDetail(generics.RetrieveUpdateDestroyAPIView):
+class APIAlbumDetail(generics.RetrieveAPIView):
     model = Album
     queryset = Album.objects.all()
     serializer_class = AlbumSerializer
 
 
-class APIArtistDetail(generics.RetrieveUpdateDestroyAPIView):
+class APIArtistDetail(generics.RetrieveAPIView):
     model = Artist
     queryset = Artist.objects.all()
     serializer_class = ArtistSerializer
 
 
-class APIArtistList(generics.ListCreateAPIView):
+class APIArtistList(generics.ListAPIView):
     queryset = Artist.objects.all()
     serializer_class = ArtistSerializer
 
 
-class APIUserDetail(generics.RetrieveUpdateDestroyAPIView):
+class APIUserDetail(generics.RetrieveAPIView):
     model = User
     lookup_field = 'username'
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
-class APIUserList(generics.ListCreateAPIView):
+class APIUserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
-class APIPlaylistDetail(generics.RetrieveUpdateDestroyAPIView):
+class APIPlaylistDetail(generics.RetrieveAPIView):
     model = Playlist
     queryset = Playlist.objects.all()
     serializer_class = PlaylistSerializer
 
 
-class APIProviderDetail(generics.RetrieveUpdateDestroyAPIView):
+class APIProviderDetail(generics.RetrieveAPIView):
     model = Provider
     queryset = Provider.objects.all()
     serializer_class = ProviderSerializer
