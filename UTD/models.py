@@ -92,7 +92,7 @@ def update_playlists(sender, user, request, **kwargs):
                 print "Adding songs from algum %s" % album.name
                 playlist.song.add(*songs)
 
-    playlist.last_update = django.utils.timezone.now
+    playlist.last_update = django.utils.timezone.now()
     playlist.save()
 
 user_logged_in.connect(update_playlists)
