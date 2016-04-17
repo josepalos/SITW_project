@@ -162,6 +162,7 @@ class FollowedArtists(ListView, FormatResponseMixin):
         context['pagetitle'] = 'Followed artists by: %s' % self.user
         return context
 
+
 class DisplayPlaylist(ListView, FormatResponseMixin):
     template_name = 'display_playlist.html'
     context_object_name = 'song_list'
@@ -175,7 +176,6 @@ class DisplayPlaylist(ListView, FormatResponseMixin):
         context['titlehead'] = 'Playlist'
         context['pagetitle'] = 'Playlist'
         return context
-
 
 
 @login_required

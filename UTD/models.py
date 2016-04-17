@@ -45,9 +45,11 @@ class UserArtistsList(models.Model):
     def __unicode__(self):
         return u'%s' % self.user
 
+
 class Playlist(models.Model):
+    name = models.TextField()
     user = models.ForeignKey(User)
-    song = models.ForeignKey(Song)
+    song = models.ManyToManyField(Song)
 
     def __unicode__(self):
         return u'Playlist of user %s' % self.user
