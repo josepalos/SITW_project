@@ -67,13 +67,32 @@ class Playlist(models.Model):
 
 
 # update the playlist.
-def updatePlaylists(sender, user, request, **kwargs):
+def update_playlists(sender, user, request, **kwargs):
     print "Updating playlist"
     try:
         playlist = Playlist.objects.get(user=user)
+        artists = user.userprofile.followed_artist.all()
+        for artist in artists:
+            albums = Album.objects.filter(artist=artist)
+
+            gen = (album for album in albums if album.release_date > playlist.last_update)
+            for album in gen:
+                songs = Song.objects.filter(album=album)
+                playlist.song.add(*songs)
+
     except Playlist.DoesNotExist:
         playlist = Playlist(user=user)
 
+        artists = user.userprofile.followed_artist.all()
+        for artist in artists:
+            print "Adding albums from artist %s" % artist.name
+            albums = Album.objects.filter(artist=artist)
+            for album in albums:
+                songs = Song.objects.filter(album=album)
+                print "Adding songs from algum %s" % album.name
+                playlist.song.add(*songs)
+
+    playlist.last_update = django.utils.timezone.now
     playlist.save()
 
-user_logged_in.connect(updatePlaylists)
+user_logged_in.connect(update_playlists)
