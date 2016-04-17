@@ -12,6 +12,15 @@ from django.shortcuts import render
 def index(request):
     return render(request, 'index.html')
 
+# REST API IMPORTS
+from rest_framework import generics, permissions
+from rest_framework.decorators import api_view
+from rest_framework.reverse import reverse
+from rest_framework.response import Response
+
+from serializers import SongSerializer, AlbumSerializer, ArtistSerializer, UserSerializer, PlaylistSerializer, \
+    ProviderSerializer
+
 
 class FormatResponseMixin(TemplateResponseMixin):
 
@@ -169,7 +178,7 @@ class DisplayPlaylist(ListView, FormatResponseMixin):
 
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs['username'])
-        return Playlist.objects.get(user=self.user).song.all()  # Now it's only 1 playlist per user.
+        return Playlist.objects.get(user=self.user).songs.all()  # Now it's only 1 playlist per user.
 
     def get_context_data(self, **kwargs):
         context = super(DisplayPlaylist, self).get_context_data(**kwargs)
@@ -211,3 +220,62 @@ def unfollow_artist(request, pk):
     user_following.followed_artist.remove(artist)
 
     return HttpResponse("Unfollowed.")
+
+
+# REST views
+@api_view(['GET'])
+def api_root(request, format=None):
+    """
+    The entry endpoint of our API.
+    """
+    return Response({
+        'artists': reverse('UTD:artist-list', request=request),
+        'users': reverse('UTD:user-list', request=request)
+    })
+
+
+class APISongDetail(generics.RetrieveAPIView):
+    model = Song
+    queryset = Song.objects.all()
+    serializer_class = SongSerializer
+
+
+class APIAlbumDetail(generics.RetrieveAPIView):
+    model = Album
+    queryset = Album.objects.all()
+    serializer_class = AlbumSerializer
+
+
+class APIArtistDetail(generics.RetrieveAPIView):
+    model = Artist
+    queryset = Artist.objects.all()
+    serializer_class = ArtistSerializer
+
+
+class APIArtistList(generics.ListAPIView):
+    queryset = Artist.objects.all()
+    serializer_class = ArtistSerializer
+
+
+class APIUserDetail(generics.RetrieveAPIView):
+    model = User
+    lookup_field = 'username'
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class APIUserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class APIPlaylistDetail(generics.RetrieveAPIView):
+    model = Playlist
+    queryset = Playlist.objects.all()
+    serializer_class = PlaylistSerializer
+
+
+class APIProviderDetail(generics.RetrieveAPIView):
+    model = Provider
+    queryset = Provider.objects.all()
+    serializer_class = ProviderSerializer

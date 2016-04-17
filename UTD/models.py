@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.conf import settings
@@ -25,6 +26,9 @@ class Album(models.Model):
     def __unicode__(self):
         return u'%s' % self.name
 
+    def get_absolute_url(self):
+        return reverse('UTD:album-detail', kwargs={'pkr': self.artist.pk, 'pk': self.pk})
+
 
 class Song(models.Model):
     name = models.TextField()
@@ -32,6 +36,9 @@ class Song(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.name
+
+    def get_absolute_url(self):
+        return reverse('UTD:song-detail', kwargs={'pkr': self.album.pk, 'pk': self.pk})
 
 
 class Provider(models.Model):
@@ -59,7 +66,7 @@ def create_profile_for_new_user(sender, created, instance, **kwargs):
 class Playlist(models.Model):
     name = models.TextField(default='Following')
     user = models.ForeignKey(User)
-    song = models.ManyToManyField(Song, blank=True)
+    songs = models.ManyToManyField(Song, blank=True)
     last_update = models.DateField(default=django.utils.timezone.now)
 
     def __unicode__(self):
@@ -78,7 +85,7 @@ def update_playlists(sender, user, request, **kwargs):
             gen = (album for album in albums if album.release_date > playlist.last_update)
             for album in gen:
                 songs = Song.objects.filter(album=album)
-                playlist.song.add(*songs)
+                playlist.songs.add(*songs)
 
     except Playlist.DoesNotExist:
         playlist = Playlist(user=user)
@@ -90,7 +97,7 @@ def update_playlists(sender, user, request, **kwargs):
             for album in albums:
                 songs = Song.objects.filter(album=album)
                 print "Adding songs from algum %s" % album.name
-                playlist.song.add(*songs)
+                playlist.songs.add(*songs)
 
     playlist.last_update = django.utils.timezone.now()
     playlist.save()

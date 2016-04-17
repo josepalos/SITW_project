@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'UTD',
+    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -107,5 +108,4 @@ STATIC_URL = '/static/'
 LOGIN_URL = 'login'
 
 # Redirect url when logged.
-
 LOGIN_REDIRECT_URL = 'UTD:index'

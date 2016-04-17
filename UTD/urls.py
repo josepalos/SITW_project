@@ -1,4 +1,7 @@
-from django.conf.urls import url
+from django.conf.urls import url, patterns, include
+
+from UTD.views import APISongDetail, APIAlbumDetail, APIArtistDetail, APIArtistList, APIUserDetail, APIUserList, \
+    APIPlaylistDetail, APIProviderDetail
 from UTD.views import ArtistList, ArtistDetails, AlbumList, AlbumDetails, SongList, SongDetails, RelatedArtistList,\
     Providers, FollowedArtists, DisplayPlaylist, ProfileView, follow_artist, unfollow_artist, index
 
@@ -15,7 +18,6 @@ urlpatterns = [
     url(r'^albums/(?P<pk>\d+)/songs(?P<format>(\.json|\.xml|\.html)?)/$', SongList.as_view(), name='album_songs'),
     url(r'^albums/(?P<pk>\d+)/providers(?P<format>(\.json|\.xml|\.html)?)/$', Providers.as_view(),
         name='album_providers'),
-
     url(r'^songs/(?P<pk>\d+)(?P<format>(\.json|\.xml|\.html)?)/$', SongDetails.as_view(), name='song_detail'),
 
     # url(r'^user/(?P<pk>\d+)/providers(?P<format>(\.json|\.xml|\.html)?)/$', ),
@@ -24,3 +26,25 @@ urlpatterns = [
         name='followed_artists'),
     url(r'^user/(?P<username>.+)/playlist(?P<format>(\.json|\.xml|\.html)?)/$', DisplayPlaylist.as_view()),
 ]
+
+
+# REST API patterns
+urlpatterns += patterns(
+    'UTD.views',
+    url(r'^api/$', 'api_root'),
+    url(r'^api/artists/$', APIArtistList.as_view(), name='artist-list'),
+    url(r'^api/artists/(?P<pk>\d+)/$', APIArtistDetail.as_view(), name='artist-detail'),
+
+    # url(r'^api/albums/$'),
+    url(r'^api/albums/(?P<pk>\d+)/$', APIAlbumDetail.as_view(), name='album-detail'),
+
+    # url(r'^api/songs/$'),
+    url(r'^api/songs/(?P<pk>\d+)/$', APISongDetail.as_view(), name='song-detail'),
+
+    url(r'^api/users/$', APIUserList.as_view(), name='user-list'),
+    url(r'^api/users/(?P<username>.+)/$', APIUserDetail.as_view(), name='user-detail'),
+
+    url(r'^api/playlists/(?P<pk>\d+)/$', APIPlaylistDetail.as_view(), name='playlist-detail'),
+
+    url(r'^api/providers/(?P<pk>\d+)/$', APIProviderDetail.as_view(), name='provider-detail')
+)
