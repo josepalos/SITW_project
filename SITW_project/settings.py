@@ -105,3 +105,7 @@ STATIC_URL = '/static/'
 
 # Redirect to url if not logged when login_required.
 LOGIN_URL = 'login'
+
+# Redirect url when logged.
+
+LOGIN_REDIRECT_URL = 'UTD:index'

@@ -43,14 +43,6 @@ class UserProfile(models.Model):
     followed_artist = models.ManyToManyField(Artist, blank=True)
 
 
-class UserArtistsList(models.Model):
-    user = models.OneToOneField(User)
-    followed_artist = models.ManyToManyField(Artist, blank=True)
-
-    def __unicode__(self):
-        return u'%s' % self.user
-
-
 class Playlist(models.Model):
     name = models.TextField(default='Following')
     user = models.ForeignKey(User)
