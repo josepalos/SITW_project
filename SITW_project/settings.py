@@ -108,5 +108,4 @@ STATIC_URL = '/static/'
 LOGIN_URL = 'login'
 
 # Redirect url when logged.
-
 LOGIN_REDIRECT_URL = 'UTD:index'

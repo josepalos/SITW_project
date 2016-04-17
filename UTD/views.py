@@ -18,7 +18,8 @@ from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
 
-from serializers import SongSerializer, AlbumSerializer, ArtistSerializer, UserSerializer, PlaylistSerializer
+from serializers import SongSerializer, AlbumSerializer, ArtistSerializer, UserSerializer, PlaylistSerializer, \
+    ProviderSerializer
 
 
 class FormatResponseMixin(TemplateResponseMixin):
@@ -258,3 +259,8 @@ class APIPlaylistDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Playlist.objects.all()
     serializer_class = PlaylistSerializer
 
+
+class APIProviderDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = Provider
+    queryset = Provider.objects.all()
+    serializer_class = ProviderSerializer
