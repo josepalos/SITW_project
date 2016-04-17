@@ -72,12 +72,19 @@ class UserSerializer(HyperlinkedModelSerializer):
         source='userprofile.followed_artist'
     )
 
+    playlist_set = HyperlinkedRelatedField(
+        many=True,
+        view_name='UTD:playlist-detail',
+        read_only=True
+    )
+
     class Meta:
         model = User
         fields = (
             'url',
             'username',
             'following',
+            'playlist_set',
         )
 
 
