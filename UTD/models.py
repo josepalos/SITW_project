@@ -38,6 +38,11 @@ class Provider(models.Model):
         return u'%s' % self.provider_name
 
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    followed_artist = models.ManyToManyField(Artist, blank=True)
+
+
 class UserArtistsList(models.Model):
     user = models.OneToOneField(User)
     followed_artist = models.ManyToManyField(Artist, blank=True)
