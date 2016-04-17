@@ -1,4 +1,4 @@
-from models import Artist, Album, Song, Provider, UserArtistsList
+from models import Artist, Album, Song, Provider, Playlist
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
@@ -161,7 +161,7 @@ class FollowedArtists(ListView, FormatResponseMixin):
 
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs['username'])
-        return UserArtistsList.objects.get(user=self.user).followed_artist.all()
+        return self.user.userprofile.followed_artist.all()
 
     def get_context_data(self, **kwargs):
         context = super(FollowedArtists, self).get_context_data(**kwargs)
@@ -170,9 +170,24 @@ class FollowedArtists(ListView, FormatResponseMixin):
         return context
 
 
+class DisplayPlaylist(ListView, FormatResponseMixin):
+    template_name = 'display_playlist.html'
+    context_object_name = 'song_list'
+
+    def get_queryset(self):
+        self.user = get_object_or_404(User, username=self.kwargs['username'])
+        return Playlist.objects.get(user=self.user).song.all()  # Now it's only 1 playlist per user.
+
+    def get_context_data(self, **kwargs):
+        context = super(DisplayPlaylist, self).get_context_data(**kwargs)
+        context['titlehead'] = 'Playlist'
+        context['pagetitle'] = 'Playlist'
+        return context
+
+
 @login_required
 def follow_artist(request, pk):
-    user_following = UserArtistsList.objects.get(user=request.user)
+    user_following = request.user.userprofile
     artist = Artist.objects.get(pk=pk)
 
     user_following.followed_artist.add(artist)
@@ -182,7 +197,7 @@ def follow_artist(request, pk):
 
 @login_required
 def unfollow_artist(request, pk):
-    user_following = UserArtistsList.objects.get(user=request.user)
+    user_following = request.user.userprofile
     artist = Artist.objects.get(pk=pk)
 
     user_following.followed_artist.remove(artist)
