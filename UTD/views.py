@@ -169,7 +169,7 @@ class DisplayPlaylist(ListView, FormatResponseMixin):
 
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs['username'])
-        return Playlist.objects.filter(user=self.user).all()
+        return Playlist.objects.get(user=self.user).song.all()  # Now it's only 1 playlist per user.
 
     def get_context_data(self, **kwargs):
         context = super(DisplayPlaylist, self).get_context_data(**kwargs)
