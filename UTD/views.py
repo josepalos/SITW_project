@@ -183,13 +183,13 @@ class ProfileView(ListView, FormatResponseMixin):
     context_object_name = 'user'
 
     def get_queryset(self):
-        self.user = get_object_or_404(UserProfile, user = User.objects.get(username=self.kwargs['username']))
+        self.user = get_object_or_404(User, username = self.kwargs['username'])
         return self.user
 
     def get_context_data(self, **kwargs):
         context = super(ProfileView, self).get_context_data(**kwargs)
-        context['titlehead'] = self.user.user.username
-        context['pagetitle'] = self.user.user.username
+        context['titlehead'] = self.user.username
+        context['pagetitle'] = self.user.username
         return context
 
 
