@@ -47,7 +47,7 @@ class UserArtistsList(models.Model):
 
 
 class Playlist(models.Model):
-    name = models.TextField()
+    name = models.TextField(default='Following')
     user = models.ForeignKey(User)
     song = models.ManyToManyField(Song)
 
