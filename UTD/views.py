@@ -1,4 +1,4 @@
-from models import Artist, Album, Song, Provider, Playlist
+from models import Artist, Album, Song, Provider, Playlist, UserProfile
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
@@ -18,7 +18,7 @@ from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
 
-from serializers import SongSerializer, AlbumSerializer, ArtistSerializer
+from serializers import SongSerializer, AlbumSerializer, ArtistSerializer, UserSerializer
 
 
 class FormatResponseMixin(TemplateResponseMixin):
@@ -237,3 +237,10 @@ class APIArtistDetail(generics.RetrieveUpdateDestroyAPIView):
 class APIArtistList(generics.ListCreateAPIView):
     queryset = Artist.objects.all()
     serializer_class = ArtistSerializer
+
+
+class APIUserDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = User
+    lookup_field = 'username'
+    queryset = User.objects.all()
+    serializer_class = UserSerializer

@@ -1,6 +1,7 @@
 from rest_framework.serializers import HyperlinkedModelSerializer
 from rest_framework.relations import HyperlinkedIdentityField, HyperlinkedRelatedField
-from models import Song, Album, Artist
+from models import Song, Album, Artist, UserProfile
+from django.contrib.auth.models import User
 
 
 class SongSerializer(HyperlinkedModelSerializer):
@@ -55,4 +56,26 @@ class ArtistSerializer(HyperlinkedModelSerializer):
             'name',
             'album_set',
             'related',
+        )
+
+
+class UserSerializer(HyperlinkedModelSerializer):
+    url = HyperlinkedIdentityField(
+        view_name='UTD:user-detail',
+        lookup_field='username',
+    )
+
+    following = HyperlinkedRelatedField(
+        many=True,
+        view_name='UTD:artist-detail',
+        read_only=True,
+        source='userprofile.followed_artist'
+    )
+
+    class Meta:
+        model = User
+        fields = (
+            'url',
+            'username',
+            'following',
         )
