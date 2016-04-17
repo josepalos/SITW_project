@@ -1,0 +1,10 @@
+{% extends 'basepage.html' %}
+{% block content %}
+    <p>
+        Song: ----> {{ song.name }}
+        <br>
+        Album: ---> {{ song.album }}
+        <br>
+        Artist: ---> {{ song.album.artist }}
+    </p>
+{% endblock %}

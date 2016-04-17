@@ -1,0 +1,5 @@
+{%  extends "basepage.html" %}
+{% block content %}
+    Hello there.
+    Start using our app with the list of <a href="{% url 'UTD:artist_list' format='' %}">artists</a> or <a href="{% url 'django.contrib.auth.views.login' %}">login</a>.
+{% endblock %}
