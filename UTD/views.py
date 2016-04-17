@@ -213,6 +213,7 @@ def api_root(request, format=None):
     """
     return Response({
         'artists': reverse('UTD:artist-list', request=request),
+        'users': reverse('UTD:user-list', request=request)
     })
 
 
@@ -242,5 +243,10 @@ class APIArtistList(generics.ListCreateAPIView):
 class APIUserDetail(generics.RetrieveUpdateDestroyAPIView):
     model = User
     lookup_field = 'username'
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class APIUserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
