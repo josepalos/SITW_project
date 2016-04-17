@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from django.conf import settings
 
 # Create your models here.
 
@@ -43,10 +46,18 @@ class UserProfile(models.Model):
     followed_artist = models.ManyToManyField(Artist, blank=True)
 
 
+# Create an UserProfile when an user is created.
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_profile_for_new_user(sender, created, instance, **kwargs):
+    if created:
+        profile = UserProfile(user=instance)
+        profile.save()
+
+
 class Playlist(models.Model):
     name = models.TextField(default='Following')
     user = models.ForeignKey(User)
-    song = models.ManyToManyField(Song)
+    song = models.ManyToManyField(Song, )
 
     def __unicode__(self):
         return u'Playlist of user %s' % self.user
