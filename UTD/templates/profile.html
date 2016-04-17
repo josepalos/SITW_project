@@ -1,4 +1,13 @@
 {% extends "basepage.html" %}
 {% block content %}
-    User: -----
+    Name: {{ user.first_name }} {{ user.last_name }} <br>
+    e-mail: {{ user.user.email }} <br>
+    Followed artists:
+    <ul>
+        {% for artist in user.userprofile.followed_artists %}
+            <li>{{ artist.name }}</li>
+        {% endfor %}
+
+    </ul>
+
 {% endblock %}
