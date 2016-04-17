@@ -18,7 +18,7 @@ from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
 
-from serializers import SongSerializer, AlbumSerializer, ArtistSerializer, UserSerializer
+from serializers import SongSerializer, AlbumSerializer, ArtistSerializer, UserSerializer, PlaylistSerializer
 
 
 class FormatResponseMixin(TemplateResponseMixin):
@@ -155,6 +155,7 @@ class Providers(ListView, FormatResponseMixin):
         context['pagetitle'] = self.album.name
         return context
 
+
 class FollowedArtists(ListView, FormatResponseMixin):
     template_name = 'followed_artists.html'
     context_object_name = 'followed_artists'
@@ -176,7 +177,7 @@ class DisplayPlaylist(ListView, FormatResponseMixin):
 
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs['username'])
-        return Playlist.objects.get(user=self.user).song.all()  # Now it's only 1 playlist per user.
+        return Playlist.objects.get(user=self.user).songs.all()  # Now it's only 1 playlist per user.
 
     def get_context_data(self, **kwargs):
         context = super(DisplayPlaylist, self).get_context_data(**kwargs)
@@ -250,3 +251,10 @@ class APIUserDetail(generics.RetrieveUpdateDestroyAPIView):
 class APIUserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class APIPlaylistDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = Playlist
+    queryset = Playlist.objects.all()
+    serializer_class = PlaylistSerializer
+

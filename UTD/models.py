@@ -66,7 +66,7 @@ def create_profile_for_new_user(sender, created, instance, **kwargs):
 class Playlist(models.Model):
     name = models.TextField(default='Following')
     user = models.ForeignKey(User)
-    song = models.ManyToManyField(Song, blank=True)
+    songs = models.ManyToManyField(Song, blank=True)
     last_update = models.DateField(default=django.utils.timezone.now)
 
     def __unicode__(self):
@@ -85,7 +85,7 @@ def update_playlists(sender, user, request, **kwargs):
             gen = (album for album in albums if album.release_date > playlist.last_update)
             for album in gen:
                 songs = Song.objects.filter(album=album)
-                playlist.song.add(*songs)
+                playlist.songs.add(*songs)
 
     except Playlist.DoesNotExist:
         playlist = Playlist(user=user)
@@ -97,7 +97,7 @@ def update_playlists(sender, user, request, **kwargs):
             for album in albums:
                 songs = Song.objects.filter(album=album)
                 print "Adding songs from algum %s" % album.name
-                playlist.song.add(*songs)
+                playlist.songs.add(*songs)
 
     playlist.last_update = django.utils.timezone.now
     playlist.save()
