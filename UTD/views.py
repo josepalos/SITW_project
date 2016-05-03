@@ -169,7 +169,7 @@ class ProvidersCreate(CreateView):
         return super(ProvidersCreate, self).form_valid(form)
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('UTD:album_providers', kwargs={'pk': self.kwargs['pk'], 'format': '.html'})
+        return reverse_lazy('UTD:album_providers', kwargs={'pk': self.kwargs['pk'], 'format': ''})
 
 
 class FollowedArtists(ListView, FormatResponseMixin):
