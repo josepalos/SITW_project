@@ -156,6 +156,7 @@ class Providers(ListView, FormatResponseMixin):
         context = super(Providers, self).get_context_data(**kwargs)
         context['titlehead'] = self.album.name
         context['pagetitle'] = self.album.name
+        context['album'] = self.album
         return context
 
 

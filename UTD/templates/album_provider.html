@@ -5,4 +5,7 @@
         <li><a href="{{ provider.link }}">{{ provider.provider_name }}</a></li>
     {% endfor %}
 </ul>
+<br>
+<br>
+<a href="{% url "UTD:provider_create" pk=album.pk %}">Add a provider</a>
 {%  endblock %}
