@@ -1,3 +1,4 @@
+from UTD.forms import ProviderForm
 from models import Artist, Album, Song, Provider, Playlist, UserProfile
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView
@@ -7,7 +8,8 @@ from django.http import HttpResponse
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-
+from django.views.generic.edit import CreateView
+from django.core.urlresolvers import reverse_lazy
 
 def index(request):
     return render(request, 'index.html')
@@ -154,7 +156,21 @@ class Providers(ListView, FormatResponseMixin):
         context = super(Providers, self).get_context_data(**kwargs)
         context['titlehead'] = self.album.name
         context['pagetitle'] = self.album.name
+        context['album'] = self.album
         return context
+
+
+class ProvidersCreate(CreateView):
+    model = Provider
+    template_name = 'form.html'
+    form_class = ProviderForm
+
+    def form_valid(self, form):
+        form.instance.album = Album.objects.get(id=self.kwargs['pk'])
+        return super(ProvidersCreate, self).form_valid(form)
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('UTD:album_providers', kwargs={'pk': self.kwargs['pk'], 'format': ''})
 
 
 class FollowedArtists(ListView, FormatResponseMixin):

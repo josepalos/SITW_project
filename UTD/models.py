@@ -44,7 +44,7 @@ class Song(models.Model):
 class Provider(models.Model):
     provider_name = models.TextField()
     album = models.ForeignKey(Album)
-    link = models.TextField()
+    link = models.URLField()
 
     def __unicode__(self):
         return u'%s' % self.provider_name
