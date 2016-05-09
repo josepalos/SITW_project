@@ -5,6 +5,6 @@
         <br>
         Album: ---> <a href="{% url 'UTD:album_detail' pk=song.album.pk format='' %}">{{ song.album }}</a>
         <br>
-        Artist: ---> {{ song.album.artist }}
+        Artist: ---> <a href="{% url 'UTD:artist_detail' pk=song.album.pk format='' %}">{{ song.album.artist }}</a>
     </p>
 {% endblock %}
