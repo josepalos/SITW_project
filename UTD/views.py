@@ -11,6 +11,7 @@ from django.shortcuts import render
 from django.views.generic.edit import CreateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.core.exceptions import PermissionDenied
 
 
 def index(request):
@@ -54,6 +55,13 @@ class LoginRequiredMixin(object):
     def dispatch(self, *args, **kwargs):
         return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
 
+
+class CheckIsOwnerMixin(object):
+    def get_object(self, *args, **kwargs):
+        obj = super(CheckIsOwnerMixin, self).get_object(*args, **kwargs)
+        if not obj.user == self.request.user:
+            raise PermissionDenied
+        return obj
 
 class ArtistList(ListView, FormatResponseMixin):
     model = Artist
@@ -182,7 +190,7 @@ class ProvidersCreate(LoginRequiredMixin, CreateView):
         return reverse_lazy('UTD:album_providers', kwargs={'pk': self.kwargs['pk'], 'format': ''})
 
 
-class ProvidersDelete(DeleteView):
+class ProvidersDelete(CheckIsOwnerMixin, DeleteView):
     model = Provider
 
 
