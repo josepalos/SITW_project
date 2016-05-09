@@ -85,7 +85,7 @@ class ArtistDetails(DetailView, FormatResponseMixin):
         context['pagetitle'] = self.object.name
 
         try:
-            last_album = Album.objects.filter(artist=self.object).order_by('release_date')[0]
+            last_album = Album.objects.filter(artist=self.object).order_by('-release_date')[0]
         except IndexError:
             last_album = None
         context['album'] = last_album
