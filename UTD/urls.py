@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^user/(?P<username>.+)/following(?P<format>(\.json|\.xml|\.html)?)/$', FollowedArtists.as_view(),
         name='followed_artists'),
     url(r'^user/(?P<username>.+)/playlists(?P<format>(\.json|\.xml|\.html)?)/$', Playlists.as_view()),
+    url(r'^user/(?P<username>.+)/playlists(?P<format>(\.json|\.xml|\.html)?)/(?P<playlist>.+)/$', DisplayPlaylist.as_view()),
     #url(r'^user/(?P<username>.+)/playlist(?P<format>(\.json|\.xml|\.html)?)/$', DisplayPlaylist.as_view()),
 ]
 
