@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 
@@ -181,6 +181,17 @@ class ProvidersCreate(LoginRequiredMixin, CreateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('UTD:album_providers', kwargs={'pk': self.kwargs['pk'], 'format': ''})
 
+
+class ProvidersDelete(DeleteView):
+    model = Provider
+
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('UTD:album_providers', kwargs={'pk': self.album_pk, 'format': ''})
+
+    def delete(self, request, *args, **kwargs):
+        self.album_pk = self.get_object().album.pk
+        return super(ProvidersDelete, self).delete(request, *args, **kwargs)
 
 class FollowedArtists(ListView, FormatResponseMixin):
     template_name = 'followed_artists.html'
