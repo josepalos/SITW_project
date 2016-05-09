@@ -115,12 +115,13 @@ class SongList(ListView, FormatResponseMixin):
         context = super(SongList, self).get_context_data(**kwargs)
         context['titlehead'] = 'Songs list'
         context['pagetitle'] = 'Songs list'
+        context['album'] = self.album
         return context
 
 
 class SongDetails(DetailView, FormatResponseMixin):
     model = Song
-    template_name = 'songslist.html'
+    template_name = 'song.html'
 
     def get_context_data(self, **kwargs):
         context = super(SongDetails, self).get_context_data(**kwargs)
