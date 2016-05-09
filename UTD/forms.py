@@ -5,7 +5,7 @@ from django import forms
 class ProviderForm(ModelForm):
     class Meta:
         model = Provider
-        exclude = ['album']
+        exclude = ['album', 'user']
         widgets = {
             'provider_name': forms.TextInput()
         }

@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
 from django.core.urlresolvers import reverse_lazy
+from django.utils.decorators import method_decorator
+
 
 def index(request):
     return render(request, 'index.html')
@@ -45,6 +47,12 @@ class FormatResponseMixin(TemplateResponseMixin):
             elif self.kwargs['format'] == '.xml':
                 return self.render_to_xml_response(objects=objects)
         return super(FormatResponseMixin, self).render_to_response(context)
+
+
+class LoginRequiredMixin(object):
+    @method_decorator(login_required())
+    def dispatch(self, *args, **kwargs):
+        return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
 
 
 class ArtistList(ListView, FormatResponseMixin):
@@ -160,13 +168,14 @@ class Providers(ListView, FormatResponseMixin):
         return context
 
 
-class ProvidersCreate(CreateView):
+class ProvidersCreate(LoginRequiredMixin, CreateView):
     model = Provider
     template_name = 'form.html'
     form_class = ProviderForm
 
     def form_valid(self, form):
         form.instance.album = Album.objects.get(id=self.kwargs['pk'])
+        form.instance.user = self.request.user
         return super(ProvidersCreate, self).form_valid(form)
 
     def get_success_url(self, **kwargs):
