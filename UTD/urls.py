@@ -1,7 +1,7 @@
 from django.conf.urls import url, patterns, include
 
 from UTD.views import APISongDetail, APIAlbumDetail, APIArtistDetail, APIArtistList, APIUserDetail, APIUserList, \
-    APIPlaylistDetail, APIProviderDetail, ProvidersCreate
+    APIPlaylistDetail, APIProviderDetail, ProvidersCreate, ProvidersDelete
 from UTD.views import ArtistList, ArtistDetails, AlbumList, AlbumDetails, SongList, SongDetails, RelatedArtistList,\
     Providers, FollowedArtists, DisplayPlaylist, ProfileView, follow_artist, unfollow_artist, index
 
@@ -20,6 +20,8 @@ urlpatterns = [
         name='album_providers'),
     url(r'^albums/(?P<pk>\d+)/providers/create', ProvidersCreate.as_view(), name='provider_create'),
     url(r'^songs/(?P<pk>\d+)(?P<format>(\.json|\.xml|\.html)?)/$', SongDetails.as_view(), name='song_detail'),
+
+    url(r'^providers/(?P<pk>\d+)/delete', ProvidersDelete.as_view(), name='provider_delete'),
 
     # url(r'^user/(?P<pk>\d+)/providers(?P<format>(\.json|\.xml|\.html)?)/$', ),
     url(r'^user/(?P<username>[^/]+)(?P<format>(\.json|\.xml|\.html)?)/$', ProfileView.as_view(), name='profile'),

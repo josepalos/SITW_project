@@ -8,8 +8,11 @@ from django.http import HttpResponse
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.core.exceptions import PermissionDenied
+
 
 def index(request):
     return render(request, 'index.html')
@@ -46,6 +49,19 @@ class FormatResponseMixin(TemplateResponseMixin):
                 return self.render_to_xml_response(objects=objects)
         return super(FormatResponseMixin, self).render_to_response(context)
 
+
+class LoginRequiredMixin(object):
+    @method_decorator(login_required())
+    def dispatch(self, *args, **kwargs):
+        return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
+
+
+class CheckIsOwnerMixin(object):
+    def get_object(self, *args, **kwargs):
+        obj = super(CheckIsOwnerMixin, self).get_object(*args, **kwargs)
+        if not obj.user == self.request.user:
+            raise PermissionDenied
+        return obj
 
 class ArtistList(ListView, FormatResponseMixin):
     model = Artist
@@ -161,18 +177,30 @@ class Providers(ListView, FormatResponseMixin):
         return context
 
 
-class ProvidersCreate(CreateView):
+class ProvidersCreate(LoginRequiredMixin, CreateView):
     model = Provider
     template_name = 'form.html'
     form_class = ProviderForm
 
     def form_valid(self, form):
         form.instance.album = Album.objects.get(id=self.kwargs['pk'])
+        form.instance.user = self.request.user
         return super(ProvidersCreate, self).form_valid(form)
 
     def get_success_url(self, **kwargs):
         return reverse_lazy('UTD:album_providers', kwargs={'pk': self.kwargs['pk'], 'format': ''})
 
+
+class ProvidersDelete(CheckIsOwnerMixin, DeleteView):
+    model = Provider
+
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('UTD:album_providers', kwargs={'pk': self.album_pk, 'format': ''})
+
+    def delete(self, request, *args, **kwargs):
+        self.album_pk = self.get_object().album.pk
+        return super(ProvidersDelete, self).delete(request, *args, **kwargs)
 
 class FollowedArtists(ListView, FormatResponseMixin):
     template_name = 'followed_artists.html'
