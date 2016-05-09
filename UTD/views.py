@@ -160,6 +160,19 @@ class Providers(ListView, FormatResponseMixin):
         context['album'] = self.album
         return context
 
+class Playlists(ListView, FormatResponseMixin):
+    template_name = 'playlist_list.html'
+    context_object_name = 'playlist_list'
+
+    def get_queryset(self):
+        self.user = get_object_or_404(User, username=self.kwargs['username'])
+        return Playlist.objects.filter(user = self.user)
+
+    def get_context_data(self, **kwargs):
+        context = super(Playlists, self).get_context_data(**kwargs)
+        context['titlehead'] = 'Playlists'
+        context['pagetitle'] = 'Playlists'
+        return context
 
 class ProvidersCreate(CreateView):
     model = Provider
