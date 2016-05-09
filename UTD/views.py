@@ -1,4 +1,4 @@
-from UTD.forms import ProviderForm
+from UTD.forms import ProviderForm, PlaylistForm
 from models import Artist, Album, Song, Provider, Playlist, UserProfile
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView
@@ -172,6 +172,18 @@ class ProvidersCreate(CreateView):
 
     def get_success_url(self, **kwargs):
         return reverse_lazy('UTD:album_providers', kwargs={'pk': self.kwargs['pk'], 'format': ''})
+
+class PlaylistCreate(CreateView):
+    model = Playlist
+    template_name = 'form.html'
+    form_class = PlaylistForm
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(PlaylistCreate, self).form_valid(form)
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('UTD:')
 
 
 class FollowedArtists(ListView, FormatResponseMixin):
