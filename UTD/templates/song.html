@@ -3,7 +3,7 @@
     <p>
         Song: ----> {{ song.name }}
         <br>
-        Album: ---> <a href="{% url 'UTD:album_detail' pk=album.pk format='' %}">{{ song.album }}</a>
+        Album: ---> <a href="{% url 'UTD:album_detail' pk=song.album.pk format='' %}">{{ song.album }}</a>
         <br>
         Artist: ---> {{ song.album.artist }}
     </p>
