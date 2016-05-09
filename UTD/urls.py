@@ -22,10 +22,10 @@ urlpatterns = [
     url(r'^songs/(?P<pk>\d+)(?P<format>(\.json|\.xml|\.html)?)/$', SongDetails.as_view(), name='song_detail'),
 
     # url(r'^user/(?P<pk>\d+)/providers(?P<format>(\.json|\.xml|\.html)?)/$', ),
-    url(r'^user/(?P<username>.+)(?P<format>(\.json|\.xml|\.html)?)/$', ProfileView.as_view(), name='profile'),
-    url(r'^user/(?P<username>.+)/following(?P<format>(\.json|\.xml|\.html)?)/$', FollowedArtists.as_view(),
+    url(r'^user/(?P<username>[^/]+)(?P<format>(\.json|\.xml|\.html)?)/$', ProfileView.as_view(), name='profile'),
+    url(r'^user/(?P<username>[^/]+)/following(?P<format>(\.json|\.xml|\.html)?)/$', FollowedArtists.as_view(),
         name='followed_artists'),
-    url(r'^user/(?P<username>.+)/playlist(?P<format>(\.json|\.xml|\.html)?)/$', DisplayPlaylist.as_view()),
+    url(r'^user/(?P<username>[^/]+)/playlist(?P<format>(\.json|\.xml|\.html)?)/$', DisplayPlaylist.as_view()),
 ]
 
 
