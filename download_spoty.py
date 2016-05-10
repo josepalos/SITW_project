@@ -48,7 +48,7 @@ def main():
         artist_json = get_artist_data(id)
         artist_name = artist_json['name']
         if not UTD.models.Artist.objects.filter(name=artist_name).exists():
-            new_artist = UTD.models.Artist(name=artist_name)
+            new_artist = UTD.models.Artist(name=artist_name, spotify_id=id)
             new_artist.save()
         else:
             new_artist = UTD.models.Artist.objects.get(name=artist_name)

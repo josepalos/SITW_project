@@ -3,7 +3,7 @@ from django.conf.urls import url, patterns, include
 from UTD.views import APISongDetail, APIAlbumDetail, APIArtistDetail, APIArtistList, APIUserDetail, APIUserList, \
     APIPlaylistDetail, APIProviderDetail, ProvidersCreate, ProvidersDelete
 from UTD.views import ArtistList, ArtistDetails, AlbumList, AlbumDetails, SongList, SongDetails, RelatedArtistList,\
-    Providers, FollowedArtists, DisplayPlaylist, ProfileView, follow_artist, unfollow_artist, index
+    Providers, FollowedArtists, DisplayPlaylist, ProfileView, follow_artist, unfollow_artist, index, ArtistCreate
 
 
 urlpatterns = [
@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^artists/(?P<pk>\d+)/albums(?P<format>(\.json|\.xml|\.html)?)/$', AlbumList.as_view(), name='artist_albums'),
     url(r'^artists/(?P<pk>\d+)/follow$', follow_artist, name="artist_follow"),
     url(r'^artists/(?P<pk>\d+)/unfollow$', unfollow_artist, name="artist_unfollow"),
+    url(r'^artists/create', ArtistCreate.as_view(), name="artist_create"),
 
     url(r'^albums/(?P<pk>\d+)(?P<format>(\.json|\.xml|\.html)?)/$', AlbumDetails.as_view(), name='album_detail'),
     url(r'^albums/(?P<pk>\d+)/songs(?P<format>(\.json|\.xml|\.html)?)/$', SongList.as_view(), name='album_songs'),

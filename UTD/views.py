@@ -1,5 +1,5 @@
-from UTD.forms import ProviderForm
-from models import Artist, Album, Song, Provider, Playlist, UserProfile
+from UTD.forms import ProviderForm, ArtistForm
+from models import Artist, Album, Song, Provider, Playlist
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
@@ -63,6 +63,9 @@ class CheckIsOwnerMixin(object):
             raise PermissionDenied
         return obj
 
+# Views-----------------------
+
+
 class ArtistList(ListView, FormatResponseMixin):
     model = Artist
     template_name = 'artistslist.html'
@@ -90,6 +93,15 @@ class ArtistDetails(DetailView, FormatResponseMixin):
             last_album = None
         context['album'] = last_album
         return context
+
+
+class ArtistCreate(CreateView):
+    template_name = "artist_form.html"
+    form_class = ArtistForm
+    success_url = "/utd/artists"
+
+    def form_valid(self, form):
+        return super(ArtistCreate, self).form_valid(form)
 
 
 class AlbumList(ListView, FormatResponseMixin):
