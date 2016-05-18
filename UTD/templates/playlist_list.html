@@ -2,7 +2,7 @@
 {% block content %}
     <ul>
         {% for playlist in playlist_list %}
-            <li><a href="{% url 'UTD:song_detail' pk=playlist.pk format='' %}">{{ playlist.name }}</a></li>
+            <li><a href="{% url 'UTD:playlist_songs' username=playlist.user.username playlist=playlist.name format='' %}">{{ playlist.name }}</a></li>
         {% endfor %}
     </ul>
 
