@@ -5,5 +5,5 @@
             <li><a href="{% url 'UTD:song_detail' pk=playlist.pk format='' %}">{{ playlist.name }}</a></li>
         {% endfor %}
     </ul>
-    Back to user <a href="{% url 'UTD:profile' pk=playlist.user.pk format='' %}">{{ playlist.user }}</a>
+
 {% endblock %}
