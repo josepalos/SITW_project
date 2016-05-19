@@ -64,7 +64,7 @@ def create_profile_for_new_user(sender, created, instance, **kwargs):
 
 
 class Playlist(models.Model):
-    name = models.TextField(default='Following')
+    name = models.TextField(unique=True)
     user = models.ForeignKey(User)
     songs = models.ManyToManyField(Song, blank=True)
     last_update = models.DateField(default=django.utils.timezone.now)
