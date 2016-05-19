@@ -196,7 +196,7 @@ class PlaylistCreate(CreateView):
         return super(PlaylistCreate, self).form_valid(form)
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('UTD:')
+        return reverse_lazy('UTD:create_playlist', kwargs={'username': self.kwargs['username'], 'format': ''})
 
 
 class FollowedArtists(ListView, FormatResponseMixin):
