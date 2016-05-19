@@ -80,7 +80,7 @@ class Playlist(models.Model):
 def update_playlists(sender, user, request, **kwargs):
     print "Updating playlist"
     try:
-        playlist = Playlist.objects.get(user=user)
+        playlist = Playlist.objects.get(user=user, name='Following')
         artists = user.userprofile.followed_artist.all()
         for artist in artists:
             albums = Album.objects.filter(artist=artist)
@@ -91,7 +91,7 @@ def update_playlists(sender, user, request, **kwargs):
                 playlist.songs.add(*songs)
 
     except Playlist.DoesNotExist:
-        playlist = Playlist(user=user)
+        playlist = Playlist(user=user, name='Following')
 
         artists = user.userprofile.followed_artist.all()
         for artist in artists:
