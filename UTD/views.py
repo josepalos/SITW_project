@@ -221,7 +221,8 @@ class DisplayPlaylist(ListView, FormatResponseMixin):
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs['username'])
         self.playlist_name = get_object_or_404(Playlist, name=self.kwargs['playlist'])
-        return Playlist.objects.filter(user=self.user, name=self.playlist_n)
+        play = get_object_or_404(Playlist, user=self.user, name=self.kwargs['playlist'])
+        return play.songs.all()
 
     def get_context_data(self, **kwargs):
         context = super(DisplayPlaylist, self).get_context_data(**kwargs)
