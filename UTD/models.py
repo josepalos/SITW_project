@@ -64,10 +64,13 @@ def create_profile_for_new_user(sender, created, instance, **kwargs):
 
 
 class Playlist(models.Model):
-    name = models.TextField(unique=True)
+    name = models.TextField()
     user = models.ForeignKey(User)
     songs = models.ManyToManyField(Song, blank=True)
     last_update = models.DateField(default=django.utils.timezone.now)
+
+    class Meta:
+        unique_together = ('name', 'user',)
 
     def __unicode__(self):
         return u'%s' % self.name
