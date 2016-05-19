@@ -18,7 +18,7 @@ def index(request):
     return render(request, 'index.html')
 
 # REST API IMPORTS
-from rest_framework import generics, permissions
+from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
@@ -29,10 +29,12 @@ from serializers import SongSerializer, AlbumSerializer, ArtistSerializer, UserS
 
 class FormatResponseMixin(TemplateResponseMixin):
 
-    def render_to_json_response(self, objects, **kwargs):
+    @staticmethod
+    def render_to_json_response(objects, **kwargs):
         return HttpResponse(serializers.serialize('json', objects, **kwargs), content_type='application/json')
 
-    def render_to_xml_response(self, objects, **kwargs):
+    @staticmethod
+    def render_to_xml_response(objects, **kwargs):
         return HttpResponse(serializers.serialize('xml', objects, **kwargs), content_type='application/xml')
 
     def render_to_response(self, context, **kwargs):
@@ -281,7 +283,7 @@ def unfollow_artist(request, pk):
 
 # REST views
 @api_view(['GET'])
-def api_root(request, format=None):
+def api_root(request):
     """
     The entry endpoint of our API.
     """
