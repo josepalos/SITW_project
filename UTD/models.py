@@ -70,7 +70,7 @@ class Playlist(models.Model):
     last_update = models.DateField(default=django.utils.timezone.now)
 
     def __unicode__(self):
-        return u'Playlist of user %s' % self.user
+        return u'%s' % self.name
 
 
 # update the playlist.
