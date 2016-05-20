@@ -9,7 +9,6 @@ from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic.edit import CreateView, DeleteView, DeleteView
 from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.core.exceptions import PermissionDenied

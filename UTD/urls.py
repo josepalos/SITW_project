@@ -2,9 +2,9 @@ from django.conf.urls import url, patterns
 
 from UTD.views import APISongDetail, APIAlbumDetail, APIArtistDetail, APIArtistList, APIUserDetail, APIUserList, \
     APIPlaylistDetail, APIProviderDetail, ProvidersCreate, ProvidersDelete
-from UTD.views import ArtistList, ArtistDetails, AlbumList, AlbumDetails, SongList, SongDetails, RelatedArtistList,\
+from UTD.views import ArtistList, ArtistDetails, AlbumList, AlbumDetails, SongList, SongDetails, ArtistCreate, \
     Providers, FollowedArtists, DisplayPlaylist, ProfileView, follow_artist, unfollow_artist, index, Playlists, \
-    PlaylistCreate, PlaylistEdit, PlaylistDelete, ArtistCreate
+    PlaylistCreate, PlaylistEdit, PlaylistDelete
 
 
 urlpatterns = [

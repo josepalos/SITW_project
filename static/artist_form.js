@@ -1,34 +1,22 @@
 /**
  * Created by josep on 19/05/16.
  */
-function load_artist_data(href){
+function loadArtistData(href){
     $.ajax({
         //load only related artists by now.
-        url: href+'/related-artists',
-        datatype: 'jsonp',
+        url: href+"/related-artists",
+        datatype: "jsonp",
         success: function (data) {
-            arr = data.artists;
-            options = $("#id_related>option")
+            var arr = data.artists;
+            var options = $("#id_related>option");
             $.map(options, function(option){
-                option.selected = '';
+                option.selected = "";
                 $.map(arr, function(artist){
-                    console.log("checking "+option.innerHTML + " against "+ artist.name);
                     if(option.innerHTML === artist.name){
-                        option.selected = 'selected';
+                        option.selected = "selected";
                     }
-                })
+                });
             });
-            /*
-            $.map( arr, function(item){
-                for(i=0; i < $("#id_related>option").length; i++){
-                    //console.log("checking "+$("#id_related>option")[i].innerHTML + " against "+ item.name);
-                    if( $("#id_related>option")[i].innerHTML == item.name ){
-                        $("#id_related>option")[i].selected = 'selected';
-                        break;
-                    }
-                }
-            });
-            */
         },
     });
 }
@@ -37,18 +25,18 @@ function load_artist_data(href){
 function select(event, ui){
     if(ui.item) {
         $("#id_spotify_id").val(ui.item.id);
-        load_artist_data(ui.item.href);
+        loadArtistData(ui.item.href);
     }
 }
 
-function load_artist_list(request, response){
+function loadArtistList(request, response){
     var current = $("#id_name").val();
     $.ajax({
-        url: 'https://api.spotify.com/v1/search',
-        datatype: 'jsonp',
+        url: "https://api.spotify.com/v1/search",
+        datatype: "jsonp",
         data: {
             q: current,
-            type: 'artist',
+            type: "artist",
             limit: 50
         },
         success: function(data){
@@ -58,7 +46,7 @@ function load_artist_list(request, response){
                     value: item.name,
                     id: item.id,
                     href: item.href,
-                }
+                };
             }));
         },
     });
@@ -66,8 +54,8 @@ function load_artist_list(request, response){
 
 $(function(){
     $("#id_name").autocomplete({
-        source: load_artist_list,
+        source: loadArtistList,
         minLenght: 2,
-        select: select,
+        select: select
     });
 });

@@ -7,8 +7,8 @@ import thread
 baseurl = "https://api.spotify.com/"
 
 
-def get_albums_for_artist(id):
-    url = baseurl+'v1/artists/'+id+'/albums?album_type=album'
+def get_albums_for_artist(artist_id):
+    url = baseurl+'v1/artists/'+artist_id+'/albums?album_type=album'
     r = requests.get(url)
 
     return json.loads(r.text)
