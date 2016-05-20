@@ -13,6 +13,13 @@ Database models:
 To access the REST API the entry point is:
 - /utd/api
 
-To access the admin interface (develop mode):
+
+Development users:
+------------------
+Admin
 - username: josep
 - password: josepalos
+
+Default user
+- username: aaaa
+- password: aaaa
