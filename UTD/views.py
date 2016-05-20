@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateResponseMixin
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -208,13 +208,19 @@ class ProvidersCreate(LoginRequiredMixin, CreateView):
 class ProvidersDelete(CheckIsOwnerMixin, DeleteView):
     model = Provider
 
-
     def get_success_url(self, **kwargs):
         return reverse_lazy('UTD:album_providers', kwargs={'pk': self.album_pk, 'format': ''})
 
     def delete(self, request, *args, **kwargs):
-        self.album_pk = self.get_object().album.pk
         return super(ProvidersDelete, self).delete(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.album_pk = self.get_object().album.pk
+        if "cancel" in request.POST:
+            url = self.get_success_url()
+            return HttpResponseRedirect(url)
+        else:
+            return super(ProvidersDelete, self).post(request, *args, **kwargs)
 
 class FollowedArtists(ListView, FormatResponseMixin):
     template_name = 'followed_artists.html'
