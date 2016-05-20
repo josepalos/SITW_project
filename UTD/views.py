@@ -13,6 +13,7 @@ from django.views.generic.edit import CreateView, DeleteView, DeleteView
 from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.core.exceptions import PermissionDenied
+import spotify_handler
 
 
 def index(request):
@@ -104,7 +105,9 @@ class ArtistCreate(CreateView):
     success_url = "/utd/artists"
 
     def form_valid(self, form):
-        return super(ArtistCreate, self).form_valid(form)
+        return_value = super(ArtistCreate, self).form_valid(form)
+        spotify_handler.load_albums(form.instance)
+        return return_value
 
 
 class AlbumList(ListView, FormatResponseMixin):
