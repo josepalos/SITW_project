@@ -193,7 +193,7 @@ class Providers(ListView, FormatResponseMixin):
 
 class ProvidersCreate(LoginRequiredMixin, CreateView):
     model = Provider
-    template_name = 'form.html'
+    template_name = 'provider_form.html'
     form_class = ProviderForm
 
     def form_valid(self, form):
