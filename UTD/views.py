@@ -228,7 +228,7 @@ class PlaylistCreate(LoginRequiredMixin, CreateView):
         return super(PlaylistCreate, self).form_valid(form)
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('UTD:playlist_details', kwargs={'username': self.kwargs['username'], 'format': ''})
+        return reverse_lazy('UTD:playlist_details', kwargs={'username': self.request.user, 'format': ''})
 
 
 class ProvidersDelete(CheckIsOwnerMixin, DeleteView):
@@ -304,7 +304,7 @@ class PlaylistDelete(DeleteView):
 
 class ProfileView(ListView, FormatResponseMixin):
     template_name = 'profile.html'
-    context_object_name = 'user'
+    context_object_name = 'user_profile'
 
     def get_queryset(self):
         self.user = get_object_or_404(User, username = self.kwargs['username'])
