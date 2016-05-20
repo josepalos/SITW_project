@@ -218,7 +218,7 @@ class ProvidersCreate(LoginRequiredMixin, CreateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('UTD:album_providers', kwargs={'pk': self.kwargs['pk'], 'format': ''})
 
-class PlaylistCreate(CreateView):
+class PlaylistCreate(LoginRequiredMixin, CreateView):
     model = Playlist
     template_name = 'form.html'
     form_class = PlaylistForm
