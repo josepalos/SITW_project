@@ -13,6 +13,7 @@ import django
 class Artist(models.Model):
     name = models.TextField()
     related = models.ManyToManyField('self', symmetrical=True, related_name='related', blank=True)
+    spotify_id = models.TextField(unique=True)
 
     def __unicode__(self):
         return u'%s' % self.name
@@ -44,7 +45,8 @@ class Song(models.Model):
 class Provider(models.Model):
     provider_name = models.TextField()
     album = models.ForeignKey(Album)
-    link = models.TextField()
+    link = models.URLField()
+    user = models.ForeignKey(User, default=1)
 
     def __unicode__(self):
         return u'%s' % self.provider_name
@@ -64,20 +66,23 @@ def create_profile_for_new_user(sender, created, instance, **kwargs):
 
 
 class Playlist(models.Model):
-    name = models.TextField(default='Following')
+    name = models.TextField()
     user = models.ForeignKey(User)
     songs = models.ManyToManyField(Song, blank=True)
     last_update = models.DateField(default=django.utils.timezone.now)
 
+    class Meta:
+        unique_together = ('name', 'user',)
+
     def __unicode__(self):
-        return u'Playlist of user %s' % self.user
+        return u'%s' % self.name
 
 
 # update the playlist.
 def update_playlists(sender, user, request, **kwargs):
     print "Updating playlist"
     try:
-        playlist = Playlist.objects.get(user=user)
+        playlist = Playlist.objects.get(user=user, name='Following')
         artists = user.userprofile.followed_artist.all()
         for artist in artists:
             albums = Album.objects.filter(artist=artist)
@@ -87,8 +92,13 @@ def update_playlists(sender, user, request, **kwargs):
                 songs = Song.objects.filter(album=album)
                 playlist.songs.add(*songs)
 
+        playlist.last_update = django.utils.timezone.now()
+        playlist.save()
+
     except Playlist.DoesNotExist:
-        playlist = Playlist(user=user)
+        playlist = Playlist(user=user, name='Following')
+        playlist.last_update = django.utils.timezone.now()
+        playlist.save()
 
         artists = user.userprofile.followed_artist.all()
         for artist in artists:
@@ -99,7 +109,5 @@ def update_playlists(sender, user, request, **kwargs):
                 print "Adding songs from algum %s" % album.name
                 playlist.songs.add(*songs)
 
-    playlist.last_update = django.utils.timezone.now()
-    playlist.save()
 
 user_logged_in.connect(update_playlists)

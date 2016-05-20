@@ -109,9 +109,12 @@ class PlaylistSerializer(HyperlinkedModelSerializer):
 
 
 class ProviderSerializer(HyperlinkedModelSerializer):
+    creator = HyperlinkedRelatedField(view_name='UTD:user-detail', source='user', read_only=True, lookup_field='username')
+
     class Meta:
         model = Provider
         fields = (
             'provider_name',
+            'creator',
             'link',
         )

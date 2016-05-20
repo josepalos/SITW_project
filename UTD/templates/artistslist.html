@@ -5,8 +5,14 @@
         <li>
             <a href="{% url 'UTD:artist_detail' pk=artist.pk format='' %}">{{ artist.name }}</a>
             {% if not user.is_anonymous %}
+                {% if artist in user.userprofile.followed_artist.all %}
+                    <a href="{% url 'UTD:artist_unfollow' artist.pk %}">Unfollow</a></li>
+                {% else %}
                     <a href="{% url 'UTD:artist_follow' artist.pk %}">Follow</a></li>
+                {% endif %}
             {% endif %}
     {% endfor %}
 </ul>
+    <br>
+    <a href="{% url "UTD:artist_create" %}">Create new artist.</a>
 {%  endblock %}

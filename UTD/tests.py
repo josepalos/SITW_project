@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.test import TestCase
- 
+
 from django.contrib.auth import get_user_model
 import models
- 
+
 
 # from (http://www.marinamele.com/taskbuster-django-tutorial/model-creation-onetoone-relationship-signals-django-admin)
 class TestProfileModel(TestCase):
- 
     def test_profile_creation(self):
         User = get_user_model()
         # New user created

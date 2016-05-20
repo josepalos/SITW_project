@@ -1,22 +1,29 @@
-from models import Artist, Album, Song, Provider, Playlist, UserProfile
+from UTD.forms import ProviderForm, ArtistForm, PlaylistForm
+from models import Artist, Album, Song, Provider, Playlist
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateResponseMixin
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.core.urlresolvers import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.core.exceptions import PermissionDenied
+import spotify_handler
 
 
 def index(request):
     return render(request, 'index.html')
 
 # REST API IMPORTS
-from rest_framework import generics, permissions
-from rest_framework.decorators import api_view
+from rest_framework import generics
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
+from rest_framework import permissions
 
 from serializers import SongSerializer, AlbumSerializer, ArtistSerializer, UserSerializer, PlaylistSerializer, \
     ProviderSerializer
@@ -24,10 +31,12 @@ from serializers import SongSerializer, AlbumSerializer, ArtistSerializer, UserS
 
 class FormatResponseMixin(TemplateResponseMixin):
 
-    def render_to_json_response(self, objects, **kwargs):
+    @staticmethod
+    def render_to_json_response(objects, **kwargs):
         return HttpResponse(serializers.serialize('json', objects, **kwargs), content_type='application/json')
 
-    def render_to_xml_response(self, objects, **kwargs):
+    @staticmethod
+    def render_to_xml_response(objects, **kwargs):
         return HttpResponse(serializers.serialize('xml', objects, **kwargs), content_type='application/xml')
 
     def render_to_response(self, context, **kwargs):
@@ -43,6 +52,22 @@ class FormatResponseMixin(TemplateResponseMixin):
             elif self.kwargs['format'] == '.xml':
                 return self.render_to_xml_response(objects=objects)
         return super(FormatResponseMixin, self).render_to_response(context)
+
+
+class LoginRequiredMixin(object):
+    @method_decorator(login_required())
+    def dispatch(self, *args, **kwargs):
+        return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
+
+
+class CheckIsOwnerMixin(object):
+    def get_object(self, *args, **kwargs):
+        obj = super(CheckIsOwnerMixin, self).get_object(*args, **kwargs)
+        if not obj.user == self.request.user:
+            raise PermissionDenied
+        return obj
+
+# Views-----------------------
 
 
 class ArtistList(ListView, FormatResponseMixin):
@@ -67,11 +92,22 @@ class ArtistDetails(DetailView, FormatResponseMixin):
         context['pagetitle'] = self.object.name
 
         try:
-            last_album = Album.objects.filter(artist=self.object).order_by('release_date')[0]
+            last_album = Album.objects.filter(artist=self.object).order_by('-release_date')[0]
         except IndexError:
             last_album = None
         context['album'] = last_album
         return context
+
+
+class ArtistCreate(CreateView):
+    template_name = "artist_form.html"
+    form_class = ArtistForm
+    success_url = "/utd/artists"
+
+    def form_valid(self, form):
+        return_value = super(ArtistCreate, self).form_valid(form)
+        spotify_handler.load_albums(form.instance)
+        return return_value
 
 
 class AlbumList(ListView, FormatResponseMixin):
@@ -113,12 +149,13 @@ class SongList(ListView, FormatResponseMixin):
         context = super(SongList, self).get_context_data(**kwargs)
         context['titlehead'] = 'Songs list'
         context['pagetitle'] = 'Songs list'
+        context['album'] = self.album
         return context
 
 
 class SongDetails(DetailView, FormatResponseMixin):
     model = Song
-    template_name = 'songslist.html'
+    template_name = 'song.html'
 
     def get_context_data(self, **kwargs):
         context = super(SongDetails, self).get_context_data(**kwargs)
@@ -154,7 +191,68 @@ class Providers(ListView, FormatResponseMixin):
         context = super(Providers, self).get_context_data(**kwargs)
         context['titlehead'] = self.album.name
         context['pagetitle'] = self.album.name
+        context['album'] = self.album
         return context
+
+
+class Playlists(ListView, FormatResponseMixin):
+    template_name = 'playlist_list.html'
+    context_object_name = 'playlist_list'
+
+    def get_queryset(self):
+        self.user = get_object_or_404(User, username=self.kwargs['username'])
+        return Playlist.objects.filter(user=self.user)
+
+    def get_context_data(self, **kwargs):
+        context = super(Playlists, self).get_context_data(**kwargs)
+        context['titlehead'] = 'Playlists'
+        context['pagetitle'] = 'Playlists'
+        return context
+
+
+class ProvidersCreate(LoginRequiredMixin, CreateView):
+    model = Provider
+    template_name = 'provider_form.html'
+    form_class = ProviderForm
+
+    def form_valid(self, form):
+        form.instance.album = Album.objects.get(id=self.kwargs['pk'])
+        form.instance.user = self.request.user
+        return super(ProvidersCreate, self).form_valid(form)
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('UTD:album_providers', kwargs={'pk': self.kwargs['pk'], 'format': ''})
+
+
+class PlaylistCreate(LoginRequiredMixin, CreateView):
+    model = Playlist
+    template_name = 'form.html'
+    form_class = PlaylistForm
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(PlaylistCreate, self).form_valid(form)
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('UTD:playlist_details', kwargs={'username': self.request.user, 'format': ''})
+
+
+class ProvidersDelete(CheckIsOwnerMixin, DeleteView):
+    model = Provider
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('UTD:album_providers', kwargs={'pk': self.album_pk, 'format': ''})
+
+    def delete(self, request, *args, **kwargs):
+        return super(ProvidersDelete, self).delete(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.album_pk = self.get_object().album.pk
+        if "cancel" in request.POST:
+            url = self.get_success_url()
+            return HttpResponseRedirect(url)
+        else:
+            return super(ProvidersDelete, self).post(request, *args, **kwargs)
 
 
 class FollowedArtists(ListView, FormatResponseMixin):
@@ -178,7 +276,9 @@ class DisplayPlaylist(ListView, FormatResponseMixin):
 
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs['username'])
-        return Playlist.objects.get(user=self.user).songs.all()  # Now it's only 1 playlist per user.
+        self.playlist_name = get_object_or_404(Playlist, pk=self.kwargs['pk'])
+        play = get_object_or_404(Playlist, user=self.user, pk=self.kwargs['pk'])
+        return play.songs.all()
 
     def get_context_data(self, **kwargs):
         context = super(DisplayPlaylist, self).get_context_data(**kwargs)
@@ -187,12 +287,35 @@ class DisplayPlaylist(ListView, FormatResponseMixin):
         return context
 
 
+class PlaylistEdit(CheckIsOwnerMixin, UpdateView):
+    model = Playlist
+    template_name = 'form.html'
+    fields = ['name', 'songs']
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('UTD:playlist_details', kwargs={'username': self.kwargs['username'], 'format': ''})
+
+
+class PlaylistDelete(CheckIsOwnerMixin, DeleteView):
+    model = Playlist
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('UTD:playlist_details', kwargs={'username': self.kwargs['username'], 'format': ''})
+
+    def post(self, request, *args, **kwargs):
+        if "cancel" in request.POST:
+            url = self.get_success_url()
+            return HttpResponseRedirect(url)
+        else:
+            return super(PlaylistDelete, self).post(request, *args, **kwargs)
+
+
 class ProfileView(ListView, FormatResponseMixin):
     template_name = 'profile.html'
-    context_object_name = 'user'
+    context_object_name = 'user_profile'
 
     def get_queryset(self):
-        self.user = get_object_or_404(User, username = self.kwargs['username'])
+        self.user = get_object_or_404(User, username=self.kwargs['username'])
         return self.user
 
     def get_context_data(self, **kwargs):
@@ -224,7 +347,8 @@ def unfollow_artist(request, pk):
 
 # REST views
 @api_view(['GET'])
-def api_root(request, format=None):
+@permission_classes((permissions.IsAuthenticated,))
+def api_root(request):
     """
     The entry endpoint of our API.
     """
@@ -275,7 +399,7 @@ class APIPlaylistDetail(generics.RetrieveAPIView):
     serializer_class = PlaylistSerializer
 
 
-class APIProviderDetail(generics.RetrieveAPIView):
+class APIProviderDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Provider
     queryset = Provider.objects.all()
     serializer_class = ProviderSerializer
