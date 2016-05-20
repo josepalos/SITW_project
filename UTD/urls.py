@@ -4,7 +4,7 @@ from UTD.views import APISongDetail, APIAlbumDetail, APIArtistDetail, APIArtistL
     APIPlaylistDetail, APIProviderDetail, ProvidersCreate
 from UTD.views import ArtistList, ArtistDetails, AlbumList, AlbumDetails, SongList, SongDetails, RelatedArtistList,\
     Providers, FollowedArtists, DisplayPlaylist, ProfileView, follow_artist, unfollow_artist, index, Playlists, \
-    PlaylistCreate, PlaylistEdit
+    PlaylistCreate, PlaylistEdit, PlaylistDelete
 
 
 urlpatterns = [
@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^user/(?P<username>[^/]+)/playlists/(?P<playlist>(?!create)[^/]+)(?P<format>(\.json|\.xml|\.html)?)/$', DisplayPlaylist.as_view(), name='playlist_songs'),
     url(r'^user/(?P<username>[^/]+)/playlists/create(?P<format>(\.json|\.xml|\.html)?)/$', PlaylistCreate.as_view(), name= 'create_playlist'),
     url(r'^user/(?P<username>[^/]+)/playlists/(?P<playlist>(?!create)[^/]+)/modify(?P<format>(\.json|\.xml|\.html)?)/$', PlaylistEdit.as_view(), name= 'edit_playlist'),
+    url(r'^user/(?P<username>[^/]+)/playlists/(?P<playlist>(?!create)[^/]+)/delete(?P<format>(\.json|\.xml|\.html)?)/$', PlaylistDelete.as_view(), name= 'delete_playlist'),
     #url(r'^user/(?P<username>[^/]+)/playlist(?P<format>(\.json|\.xml|\.html)?)/$', DisplayPlaylist.as_view()),
 ]
 

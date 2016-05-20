@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
 
 def index(request):
@@ -241,6 +241,17 @@ class PlaylistEdit(UpdateView):
     def get_object(self, queryset=None):
         instance = Playlist.objects.get(name=self.kwargs.get('playlist', ''))
         return instance
+
+class PlaylistDelete(DeleteView):
+    model = Playlist
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('UTD:playlist_details', kwargs={'username': self.kwargs['username'], 'format': ''})
+
+    def get_object(self, queryset=None):
+        instance = Playlist.objects.get(name=self.kwargs.get('playlist', ''))
+        return instance
+
 
 class ProfileView(ListView, FormatResponseMixin):
     template_name = 'profile.html'
