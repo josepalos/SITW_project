@@ -191,6 +191,7 @@ class Providers(ListView, FormatResponseMixin):
         context['album'] = self.album
         return context
 
+
 class Playlists(ListView, FormatResponseMixin):
     template_name = 'playlist_list.html'
     context_object_name = 'playlist_list'
@@ -205,6 +206,7 @@ class Playlists(ListView, FormatResponseMixin):
         context['pagetitle'] = 'Playlists'
         return context
 
+
 class ProvidersCreate(LoginRequiredMixin, CreateView):
     model = Provider
     template_name = 'provider_form.html'
@@ -217,6 +219,7 @@ class ProvidersCreate(LoginRequiredMixin, CreateView):
 
     def get_success_url(self, **kwargs):
         return reverse_lazy('UTD:album_providers', kwargs={'pk': self.kwargs['pk'], 'format': ''})
+
 
 class PlaylistCreate(LoginRequiredMixin, CreateView):
     model = Playlist
@@ -248,6 +251,7 @@ class ProvidersDelete(CheckIsOwnerMixin, DeleteView):
         else:
             return super(ProvidersDelete, self).post(request, *args, **kwargs)
 
+
 class FollowedArtists(ListView, FormatResponseMixin):
     template_name = 'followed_artists.html'
     context_object_name = 'followed_artists'
@@ -269,8 +273,8 @@ class DisplayPlaylist(ListView, FormatResponseMixin):
 
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs['username'])
-        self.playlist_name = get_object_or_404(Playlist, name=self.kwargs['playlist'])
-        play = get_object_or_404(Playlist, user=self.user, name=self.kwargs['playlist'])
+        self.playlist_name = get_object_or_404(Playlist, pk=self.kwargs['pk'])
+        play = get_object_or_404(Playlist, user=self.user, pk=self.kwargs['pk'])
         return play.songs.all()
 
     def get_context_data(self, **kwargs):
@@ -279,7 +283,8 @@ class DisplayPlaylist(ListView, FormatResponseMixin):
         context['pagetitle'] = 'Playlist'
         return context
 
-class PlaylistEdit(UpdateView):
+
+class PlaylistEdit(CheckIsOwnerMixin, UpdateView):
     model = Playlist
     template_name = 'form.html'
     fields = ['name', 'songs']
@@ -287,19 +292,12 @@ class PlaylistEdit(UpdateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('UTD:playlist_details', kwargs={'username': self.kwargs['username'], 'format': ''})
 
-    def get_object(self, queryset=None):
-        instance = Playlist.objects.get(name=self.kwargs.get('playlist', ''))
-        return instance
 
-class PlaylistDelete(DeleteView):
+class PlaylistDelete(CheckIsOwnerMixin, DeleteView):
     model = Playlist
 
     def get_success_url(self, **kwargs):
         return reverse_lazy('UTD:playlist_details', kwargs={'username': self.kwargs['username'], 'format': ''})
-
-    def get_object(self, queryset=None):
-        instance = Playlist.objects.get(name=self.kwargs.get('playlist', ''))
-        return instance
 
 
 class ProfileView(ListView, FormatResponseMixin):
