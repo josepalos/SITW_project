@@ -2,7 +2,8 @@
 {% block content %}
     <ul>
         {% for playlist in playlist_list %}
-            <li><a href="{% url 'UTD:playlist_songs' username=playlist.user.username playlist=playlist.name format='' %}">{{ playlist.name }}</a></li>
+            <li><a href="{% url 'UTD:playlist_songs' username=playlist.user.username playlist=playlist.name format='' %}">{{ playlist.name }}</a>
+                (<a href="{% url 'UTD:edit_playlist' username=playlist.user.username playlist=playlist.name format='' %}">modify</a>)</li>
         {% endfor %}
     </ul>
 

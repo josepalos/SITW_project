@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.core.urlresolvers import reverse_lazy
 
 def index(request):
@@ -230,6 +230,17 @@ class DisplayPlaylist(ListView, FormatResponseMixin):
         context['pagetitle'] = 'Playlist'
         return context
 
+class PlaylistEdit(UpdateView):
+    model = Playlist
+    template_name = 'form.html'
+    fields = ['name', 'songs']
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('UTD:playlist_details', kwargs={'username': self.kwargs['username'], 'format': ''})
+
+    def get_object(self, queryset=None):
+        instance = Playlist.objects.get(name=self.kwargs.get('playlist', ''))
+        return instance
 
 class ProfileView(ListView, FormatResponseMixin):
     template_name = 'profile.html'
