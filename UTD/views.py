@@ -299,13 +299,20 @@ class PlaylistDelete(CheckIsOwnerMixin, DeleteView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('UTD:playlist_details', kwargs={'username': self.kwargs['username'], 'format': ''})
 
+    def post(self, request, *args, **kwargs):
+        if "cancel" in request.POST:
+            url = self.get_success_url()
+            return HttpResponseRedirect(url)
+        else:
+            return super(ProvidersDelete, self).post(request, *args, **kwargs)
+
 
 class ProfileView(ListView, FormatResponseMixin):
     template_name = 'profile.html'
     context_object_name = 'user_profile'
 
     def get_queryset(self):
-        self.user = get_object_or_404(User, username = self.kwargs['username'])
+        self.user = get_object_or_404(User, username=self.kwargs['username'])
         return self.user
 
     def get_context_data(self, **kwargs):

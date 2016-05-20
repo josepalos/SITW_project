@@ -4,5 +4,6 @@
         {% csrf_token %}
         <p>Are you sure you want to delete {{ object }} ? </p>
         <input type="submit" value="confirm"/>
+        <input type="submit" name="cancel" value="Cancel" />
     </form>
 {% endblock %}
