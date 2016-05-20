@@ -1,0 +1,8 @@
+{% extends "basepage.html" %}
+{% block content %}
+    <script src="artist_form.js"></script>
+    <form action="" method="post" id="form">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="submit" />
+    </form>
+{% endblock %}

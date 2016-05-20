@@ -1,21 +1,25 @@
-from UTD.forms import ProviderForm, PlaylistForm
-from models import Artist, Album, Song, Provider, Playlist, UserProfile
+from UTD.forms import ProviderForm, ArtistForm, PlaylistForm
+from models import Artist, Album, Song, Provider, Playlist
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateResponseMixin
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView, DeleteView, DeleteView
 from django.core.urlresolvers import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.core.exceptions import PermissionDenied
+
 
 def index(request):
     return render(request, 'index.html')
 
 # REST API IMPORTS
-from rest_framework import generics, permissions
+from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
@@ -26,10 +30,12 @@ from serializers import SongSerializer, AlbumSerializer, ArtistSerializer, UserS
 
 class FormatResponseMixin(TemplateResponseMixin):
 
-    def render_to_json_response(self, objects, **kwargs):
+    @staticmethod
+    def render_to_json_response(objects, **kwargs):
         return HttpResponse(serializers.serialize('json', objects, **kwargs), content_type='application/json')
 
-    def render_to_xml_response(self, objects, **kwargs):
+    @staticmethod
+    def render_to_xml_response(objects, **kwargs):
         return HttpResponse(serializers.serialize('xml', objects, **kwargs), content_type='application/xml')
 
     def render_to_response(self, context, **kwargs):
@@ -45,6 +51,22 @@ class FormatResponseMixin(TemplateResponseMixin):
             elif self.kwargs['format'] == '.xml':
                 return self.render_to_xml_response(objects=objects)
         return super(FormatResponseMixin, self).render_to_response(context)
+
+
+class LoginRequiredMixin(object):
+    @method_decorator(login_required())
+    def dispatch(self, *args, **kwargs):
+        return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
+
+
+class CheckIsOwnerMixin(object):
+    def get_object(self, *args, **kwargs):
+        obj = super(CheckIsOwnerMixin, self).get_object(*args, **kwargs)
+        if not obj.user == self.request.user:
+            raise PermissionDenied
+        return obj
+
+# Views-----------------------
 
 
 class ArtistList(ListView, FormatResponseMixin):
@@ -69,11 +91,20 @@ class ArtistDetails(DetailView, FormatResponseMixin):
         context['pagetitle'] = self.object.name
 
         try:
-            last_album = Album.objects.filter(artist=self.object).order_by('release_date')[0]
+            last_album = Album.objects.filter(artist=self.object).order_by('-release_date')[0]
         except IndexError:
             last_album = None
         context['album'] = last_album
         return context
+
+
+class ArtistCreate(CreateView):
+    template_name = "artist_form.html"
+    form_class = ArtistForm
+    success_url = "/utd/artists"
+
+    def form_valid(self, form):
+        return super(ArtistCreate, self).form_valid(form)
 
 
 class AlbumList(ListView, FormatResponseMixin):
@@ -174,13 +205,14 @@ class Playlists(ListView, FormatResponseMixin):
         context['pagetitle'] = 'Playlists'
         return context
 
-class ProvidersCreate(CreateView):
+class ProvidersCreate(LoginRequiredMixin, CreateView):
     model = Provider
-    template_name = 'form.html'
+    template_name = 'provider_form.html'
     form_class = ProviderForm
 
     def form_valid(self, form):
         form.instance.album = Album.objects.get(id=self.kwargs['pk'])
+        form.instance.user = self.request.user
         return super(ProvidersCreate, self).form_valid(form)
 
     def get_success_url(self, **kwargs):
@@ -198,6 +230,23 @@ class PlaylistCreate(CreateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('UTD:playlist_details', kwargs={'username': self.kwargs['username'], 'format': ''})
 
+
+class ProvidersDelete(CheckIsOwnerMixin, DeleteView):
+    model = Provider
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('UTD:album_providers', kwargs={'pk': self.album_pk, 'format': ''})
+
+    def delete(self, request, *args, **kwargs):
+        return super(ProvidersDelete, self).delete(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.album_pk = self.get_object().album.pk
+        if "cancel" in request.POST:
+            url = self.get_success_url()
+            return HttpResponseRedirect(url)
+        else:
+            return super(ProvidersDelete, self).post(request, *args, **kwargs)
 
 class FollowedArtists(ListView, FormatResponseMixin):
     template_name = 'followed_artists.html'
@@ -290,7 +339,7 @@ def unfollow_artist(request, pk):
 
 # REST views
 @api_view(['GET'])
-def api_root(request, format=None):
+def api_root(request):
     """
     The entry endpoint of our API.
     """

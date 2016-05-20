@@ -1,10 +1,10 @@
-from django.conf.urls import url, patterns, include
+from django.conf.urls import url, patterns
 
 from UTD.views import APISongDetail, APIAlbumDetail, APIArtistDetail, APIArtistList, APIUserDetail, APIUserList, \
-    APIPlaylistDetail, APIProviderDetail, ProvidersCreate
+    APIPlaylistDetail, APIProviderDetail, ProvidersCreate, ProvidersDelete
 from UTD.views import ArtistList, ArtistDetails, AlbumList, AlbumDetails, SongList, SongDetails, RelatedArtistList,\
     Providers, FollowedArtists, DisplayPlaylist, ProfileView, follow_artist, unfollow_artist, index, Playlists, \
-    PlaylistCreate, PlaylistEdit, PlaylistDelete
+    PlaylistCreate, PlaylistEdit, PlaylistDelete, ArtistCreate
 
 
 urlpatterns = [
@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^artists/(?P<pk>\d+)/albums(?P<format>(\.json|\.xml|\.html)?)/$', AlbumList.as_view(), name='artist_albums'),
     url(r'^artists/(?P<pk>\d+)/follow$', follow_artist, name="artist_follow"),
     url(r'^artists/(?P<pk>\d+)/unfollow$', unfollow_artist, name="artist_unfollow"),
+    url(r'^artists/create', ArtistCreate.as_view(), name="artist_create"),
 
     url(r'^albums/(?P<pk>\d+)(?P<format>(\.json|\.xml|\.html)?)/$', AlbumDetails.as_view(), name='album_detail'),
     url(r'^albums/(?P<pk>\d+)/songs(?P<format>(\.json|\.xml|\.html)?)/$', SongList.as_view(), name='album_songs'),
@@ -21,6 +22,8 @@ urlpatterns = [
         name='album_providers'),
     url(r'^albums/(?P<pk>\d+)/providers/create', ProvidersCreate.as_view(), name='provider_create'),
     url(r'^songs/(?P<pk>\d+)(?P<format>(\.json|\.xml|\.html)?)/$', SongDetails.as_view(), name='song_detail'),
+
+    url(r'^providers/(?P<pk>\d+)/delete', ProvidersDelete.as_view(), name='provider_delete'),
 
     # url(r'^user/(?P<pk>\d+)/providers(?P<format>(\.json|\.xml|\.html)?)/$', ),
     url(r'^user/(?P<username>[^/]+)(?P<format>(\.json|\.xml|\.html)?)/$', ProfileView.as_view(), name='profile'),

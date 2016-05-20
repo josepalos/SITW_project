@@ -13,6 +13,7 @@ import django
 class Artist(models.Model):
     name = models.TextField()
     related = models.ManyToManyField('self', symmetrical=True, related_name='related', blank=True)
+    spotify_id = models.TextField(unique=True)
 
     def __unicode__(self):
         return u'%s' % self.name
@@ -45,6 +46,7 @@ class Provider(models.Model):
     provider_name = models.TextField()
     album = models.ForeignKey(Album)
     link = models.URLField()
+    user = models.ForeignKey(User, default=1)
 
     def __unicode__(self):
         return u'%s' % self.provider_name
