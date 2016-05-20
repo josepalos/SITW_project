@@ -307,7 +307,7 @@ class PlaylistDelete(CheckIsOwnerMixin, DeleteView):
             url = self.get_success_url()
             return HttpResponseRedirect(url)
         else:
-            return super(ProvidersDelete, self).post(request, *args, **kwargs)
+            return super(PlaylistDelete, self).post(request, *args, **kwargs)
 
 
 class ProfileView(ListView, FormatResponseMixin):
