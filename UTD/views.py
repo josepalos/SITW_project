@@ -20,9 +20,10 @@ def index(request):
 
 # REST API IMPORTS
 from rest_framework import generics
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
+from rest_framework import permissions
 
 from serializers import SongSerializer, AlbumSerializer, ArtistSerializer, UserSerializer, PlaylistSerializer, \
     ProviderSerializer
@@ -200,7 +201,7 @@ class Playlists(ListView, FormatResponseMixin):
 
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs['username'])
-        return Playlist.objects.filter(user = self.user)
+        return Playlist.objects.filter(user=self.user)
 
     def get_context_data(self, **kwargs):
         context = super(Playlists, self).get_context_data(**kwargs)
@@ -346,6 +347,7 @@ def unfollow_artist(request, pk):
 
 # REST views
 @api_view(['GET'])
+@permission_classes((permissions.IsAuthenticated,))
 def api_root(request):
     """
     The entry endpoint of our API.
@@ -397,7 +399,7 @@ class APIPlaylistDetail(generics.RetrieveAPIView):
     serializer_class = PlaylistSerializer
 
 
-class APIProviderDetail(generics.RetrieveAPIView):
+class APIProviderDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Provider
     queryset = Provider.objects.all()
     serializer_class = ProviderSerializer
