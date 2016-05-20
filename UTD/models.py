@@ -92,8 +92,13 @@ def update_playlists(sender, user, request, **kwargs):
                 songs = Song.objects.filter(album=album)
                 playlist.songs.add(*songs)
 
+        playlist.last_update = django.utils.timezone.now()
+        playlist.save()
+
     except Playlist.DoesNotExist:
         playlist = Playlist(user=user, name='Following')
+        playlist.last_update = django.utils.timezone.now()
+        playlist.save()
 
         artists = user.userprofile.followed_artist.all()
         for artist in artists:
@@ -104,7 +109,5 @@ def update_playlists(sender, user, request, **kwargs):
                 print "Adding songs from algum %s" % album.name
                 playlist.songs.add(*songs)
 
-    playlist.last_update = django.utils.timezone.now()
-    playlist.save()
 
 user_logged_in.connect(update_playlists)
