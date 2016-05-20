@@ -1,13 +1,6 @@
 /**
  * Created by josep on 19/05/16.
  */
-function select(event, ui){
-    if(ui.item) {
-        $("#id_spotify_id").val(ui.item.id);
-        load_artist_data(ui.item.href);
-    }
-}
-
 function load_artist_data(href){
     $.ajax({
         //load only related artists by now.
@@ -20,7 +13,7 @@ function load_artist_data(href){
                 option.selected = '';
                 $.map(arr, function(artist){
                     console.log("checking "+option.innerHTML + " against "+ artist.name);
-                    if(option.innerHTML == artist.name){
+                    if(option.innerHTML === artist.name){
                         option.selected = 'selected';
                     }
                 })
@@ -38,6 +31,14 @@ function load_artist_data(href){
             */
         },
     });
+}
+
+
+function select(event, ui){
+    if(ui.item) {
+        $("#id_spotify_id").val(ui.item.id);
+        load_artist_data(ui.item.href);
+    }
 }
 
 function load_artist_list(request, response){
