@@ -8,9 +8,9 @@
         {% endif %}
         <br>
         {% if album != None %}
-        Last album released: <a href="{% url 'UTD:album_detail' pk=album.pk format='' %}">{{ album }}</a>
+        Last album released: <a href="{% url 'UTD:album_detail' pk=album.pk %}">{{ album }}</a>
         <br>
         {% endif %}
-        <a href="{% url 'UTD:artist_albums' pk=artist.pk format=''%}">More albums</a>
+        <a href="{% url 'UTD:artist_albums' pk=artist.pk %}">More albums</a>
     </p>
 {% endblock %}

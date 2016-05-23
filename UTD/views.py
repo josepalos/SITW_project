@@ -41,15 +41,16 @@ class FormatResponseMixin(TemplateResponseMixin):
 
     def render_to_response(self, context, **kwargs):
         # Look for a 'format=json' GET argument
-        if 'format' in self.kwargs:
+        representation_format = self.request.GET.get('format', '')
+        if format is not "":
             try:
                 objects = [self.object]
             except AttributeError:
                 objects = self.object_list
 
-            if self.kwargs['format'] == '.json':
+            if representation_format == 'json':
                 return self.render_to_json_response(objects=objects)
-            elif self.kwargs['format'] == '.xml':
+            elif representation_format == 'xml':
                 return self.render_to_xml_response(objects=objects)
         return super(FormatResponseMixin, self).render_to_response(context)
 
@@ -221,7 +222,7 @@ class ProvidersCreate(LoginRequiredMixin, CreateView):
         return super(ProvidersCreate, self).form_valid(form)
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('UTD:album_providers', kwargs={'pk': self.kwargs['pk'], 'format': ''})
+        return reverse_lazy('UTD:album_providers', kwargs={'pk': self.kwargs['pk']})
 
 
 class PlaylistCreate(LoginRequiredMixin, CreateView):
@@ -234,14 +235,14 @@ class PlaylistCreate(LoginRequiredMixin, CreateView):
         return super(PlaylistCreate, self).form_valid(form)
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('UTD:playlist_details', kwargs={'username': self.request.user, 'format': ''})
+        return reverse_lazy('UTD:playlist_details', kwargs={'username': self.request.user})
 
 
 class ProvidersDelete(CheckIsOwnerMixin, DeleteView):
     model = Provider
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('UTD:album_providers', kwargs={'pk': self.album_pk, 'format': ''})
+        return reverse_lazy('UTD:album_providers', kwargs={'pk': self.album_pk})
 
     def delete(self, request, *args, **kwargs):
         return super(ProvidersDelete, self).delete(request, *args, **kwargs)
@@ -293,14 +294,14 @@ class PlaylistEdit(CheckIsOwnerMixin, UpdateView):
     fields = ['name', 'songs']
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('UTD:playlist_details', kwargs={'username': self.kwargs['username'], 'format': ''})
+        return reverse_lazy('UTD:playlist_details', kwargs={'username': self.kwargs['username']})
 
 
 class PlaylistDelete(CheckIsOwnerMixin, DeleteView):
     model = Playlist
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('UTD:playlist_details', kwargs={'username': self.kwargs['username'], 'format': ''})
+        return reverse_lazy('UTD:playlist_details', kwargs={'username': self.kwargs['username']})
 
     def post(self, request, *args, **kwargs):
         if "cancel" in request.POST:
