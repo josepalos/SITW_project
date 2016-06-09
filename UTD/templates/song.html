@@ -1,10 +1,20 @@
 {% extends 'basepage.html' %}
 {% block content %}
-    <p>
-        Song: ----> {{ song.name }}
+    <div vocab="https://schema.org" typeof="MusicRecording">
+        Song: ----> <span property="name">{{ song.name }}</span>
         <br>
-        Album: ---> <a href="{% url 'UTD:album_detail' pk=song.album.pk format='' %}">{{ song.album }}</a>
+        Album: --->
+            <span property="inAlbum" typeof="MusicAlbum" resource="{% url 'UTD:album_detail' pk=song.album.pk format='' %}">
+                <span property="name">
+                    <a href="{% url 'UTD:album_detail' pk=song.album.pk format='' %}">{{ song.album }}</a>
+                </span>
+            </span>
         <br>
-        Artist: ---> <a href="{% url 'UTD:artist_detail' pk=song.album.artist.pk format='' %}">{{ song.album.artist }}</a>
-    </p>
+        Artist: --->
+            <span property="byArtist" typeof="MusicGroup" resource="{% url 'UTD:artist_detail' pk=song.album.artist.pk format='' %}">
+                <span property="name">
+                    <a href="{% url 'UTD:artist_detail' pk=song.album.artist.pk format='' %}">{{ song.album.artist }}</a>
+                </span>
+            </span>
+    </div>
 {% endblock %}
