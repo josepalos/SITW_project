@@ -2,7 +2,7 @@
 {% block content %}
  <p vocab="http://schema.org/" typeof="MusicAlbum">
         Album name:  <span property = "Name">{{ album.name }}</span>
-        [<span typeof="MusicGroup" rel="byArtist" resource="{% url 'UTD:artist_detail' pk=album.artist.pk format='' %}">
+        [<span typeof="MusicGroup" rel="byArtist" resource="{{ request.get_host }}{% url 'UTD:artist_detail' pk=album.artist.pk format='' %}">
         	<span property="name"><a href="{% url 'UTD:artist_detail' pk=album.artist.pk format='' %}">{{ album.artist.name }}</a>
             </span>
         </span>]
