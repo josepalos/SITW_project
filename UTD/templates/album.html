@@ -1,9 +1,10 @@
 {% extends 'basepage.html' %}
 {% block content %}
+    <div vocab="http://schema.org/" typeof="Album" xmlns="http://www.w3.org/1999/html">
     <p>
-        Album name: {{ album.name }} [<a href="{% url 'UTD:artist_detail' pk=album.artist.pk format='' %}">{{ album.artist.name }}</a>]
+        Album name:  <span property = "Name">  {{ album.name }} </span> [<a href="{% url 'UTD:artist_detail' pk=album.artist.pk format='' %}">{{ album.artist.name }}</a>]
         <br>
-        Release date: {{ album.release_date }}
+        Release date: <span property="Release date">{{ album.release_date }} </span>
         <br>
         <br>
         <a href="{% url 'UTD:album_providers' pk=album.pk format='' %}">Album providers</a>
