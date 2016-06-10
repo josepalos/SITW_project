@@ -10,7 +10,7 @@
             {% endif %}
             <br>
             {% if album != None %}
-                <span typeof="MusicAlbum" rel="album" resource="{% url 'UTD:album_detail' pk=album.pk format='' %}">
+                <span typeof="MusicAlbum" rel="album" pk=album.pk format='' %}">
                     Last album released: <span property="name"><a href="{% url 'UTD:album_detail' pk=album.pk format='' %}">{{ album }}</a></span>
                 </span>
             <br>
