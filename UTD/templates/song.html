@@ -4,14 +4,14 @@
         Song: ----> <span property="name">{{ song.name }}</span>
         <br>
         Album: --->
-            <span property="inAlbum" typeof="MusicAlbum" pk=song.album.pk format='' %}">
+            <span property="inAlbum" typeof="MusicAlbum">
                 <span property="name">
                     <a href="{% url 'UTD:album_detail' pk=song.album.pk format='' %}">{{ song.album }}</a>
                 </span>
             </span>
         <br>
         Artist: --->
-            <span property="byArtist" typeof="MusicGroup" pk=song.album.artist.pk format='' %}">
+            <span property="byArtist" typeof="MusicGroup">
                 <span property="name">
                     <a href="{% url 'UTD:artist_detail' pk=song.album.artist.pk format='' %}">{{ song.album.artist }}</a>
                 </span>
