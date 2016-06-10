@@ -1,9 +1,11 @@
 {% extends 'basepage.html' %}
 {% block content %}
-    <ul>
+    <div vocab="https://schema.org/" typeof="MusicAlbum">
+    <ul rel="track">
         {% for song in songs_list %}
-            <li><a href="{% url 'UTD:song_detail' pk=song.pk format='' %}">{{ song.name }}</a></li>
+            <li typeof="MusicRecording"><span property="name"><a href="{% url 'UTD:song_detail' pk=song.pk format='' %}">{{ song.name }}</a></span></li>
         {% endfor %}
     </ul>
-    Back to album <a href="{% url 'UTD:album_detail' pk=album.pk format='' %}">{{ album.name }}</a>
+    Back to album <span property="name"><a href="{% url 'UTD:album_detail' pk=album.pk format='' %}">{{ album.name }}</a></span>
+    </div>
 {% endblock %}

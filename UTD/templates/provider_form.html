@@ -2,7 +2,6 @@
 {% block content %}
     {% load staticfiles %}
     <script>
-        var providers = ["Amazon", "Spotify", "lalala", "et mi casa"];
         $(function(){
             $("#id_provider_name").autocomplete({
                 source: "{% static "providers.json" %}",
